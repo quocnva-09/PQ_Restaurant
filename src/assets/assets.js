@@ -131,10 +131,12 @@ import blog8 from './blog8.jpg'
 
 import mail from './mail.svg'
 import right from './right.svg'
+import dollar from './dollar.svg'
 
 
 export const myAssets = {
     mail,
+    dollar,
     right,
     bento1,
     bento2,
@@ -416,3 +418,96 @@ export const blogs = [
       "An expert look at the upcoming beauty and skincare trends that will define style in 2025.",
   },
 ];
+
+export const dummyAddress = [
+  {
+    _id: "67b5b9e54ea97f71bbc196a0",
+    userId: "68591d36daf423db94fa8f4f",
+    firstName: "user",
+    lastName: "one",
+    email: "userone@gmail.com",
+    street: "789 Elm Street",
+    city: "Springfield",
+    state: "California",
+    zipcode: 90210,
+    country: "US",
+    phone: "+1-555-123-4567",
+  },
+  {
+     _id: "67b5b9e54ea97fdfgdbcsd5",
+    userId: "68591d36daf423db94fa8f4f",
+    firstName: "Jane",
+    lastName: "Smith",
+    email: "janesmith@gmail.com",
+    street: "456 Elm Street",
+    city: "Metropolis",
+    state: "CA",
+    zipcode: "998877",
+    country: "United States",
+    phone: "9876543210",
+  },
+
+];
+
+
+export const dummyOrdersData = [
+  {
+    _id: "1",
+    userId: "1",
+    items: [
+      {
+        product: dummyProducts[0], // Argan Hair Oil
+        quantity: 1,
+        size: "50ml",
+        _id: "1",
+      },
+      {
+        product: dummyProducts[3], // Tea Tree Hair Oil
+        quantity: 2,
+        size: "100ml",
+        _id: "2",
+      },
+    ],
+    amount: 40.6,
+    address: dummyAddress[0],
+    status: "Out for delivery",
+    paymentMethod: "COD",
+    isPaid: false,
+    createdAt: "2025-06-24T08:03:11.197+00:00",
+    updatedAt: "2025-06-24T11:02:04.631+00:00",
+    __v: 0,
+  },
+  {
+    _id: "2",
+    userId: "1",
+    items: [
+      {
+        product: dummyProducts[8], // Vitamin C Face Oil
+        quantity: 1,
+        size: "30ml",
+        _id: "1",
+      },
+      {
+        product: dummyProducts[24], // Volumizing Shampoo
+        quantity: 3,
+        size: "400ml",
+        _id: "2",
+      },
+    ],
+    amount: 85.0,
+    address: dummyAddress[0],
+    status: "Delivered",
+    paymentMethod: "Online",
+    isPaid: true,
+    createdAt: "2025-07-01T09:15:45.197+00:00",
+    updatedAt: "2025-07-01T11:30:04.631+00:00",
+    __v: 0,
+  },
+];
+
+export const dashboardData = {
+    "totalOrders": 125,
+    "totalRevenue": 45230.75,
+    // "orders": dummyOrdersData
+}
+

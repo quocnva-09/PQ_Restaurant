@@ -1,8 +1,37 @@
-import React from 'react'
-import { menuList } from '../assets/assets'
+import React, {useEffect, useState} from 'react'
+// import { menuList } from '../assets/assets'
 // import NewArrivals from './NewArrivals'
 // import FoodItems from './FoodItems'
+import { environment } from '../environment/environment';
+import axios from 'axios';
 const ExploreMenu = ({category, setCategory}) => {
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const[menuList,setMenuLists]=useState([]);
+
+  const fetchMenu = async () => {
+    try {
+        setLoading(true);
+        setError(null);
+        const response = await axios.get(`${environment.apiBaseUrl}/ `); //Này để chuyển đường dẫn
+        if (response.data) // Điều kiện response
+        {
+            setMenuLists(response.data); 
+        }
+    } catch (err) {
+      setError('Failed to fetch MenuLists');
+      console.error('Error fetching MenuLists:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(()=>{
+    fetchMenu();
+  },[]);
+
+  if (loading) return <div className="text-center py-10">Loading...</div>;
+  if (error) return <div className="text-center py-10 text-red-500">{error}</div>;
 
   return (
     <section className='max-padd-container py-22 xl:py-10 bg-white'>

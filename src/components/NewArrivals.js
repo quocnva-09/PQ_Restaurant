@@ -8,19 +8,38 @@ import 'swiper/css';
 
 // import required modules
 import { Autoplay } from 'swiper/modules';
-// import { dummyProducts } from '../assets/assets';
 import Item from './Item';
-import { useUserContext } from '../context/UserContext';
+import { environment } from '../environment/environment';
+import axios from 'axios';
 
 const NewArrivals = () => {
+  const [newArrivals, setNewArrivals] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const [newArrivals,setNewArrivals]=useState([]);
-  const {products}=useUserContext()
+  const fetchNewArrivals = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await axios.get(`${environment.apiBaseUrl}/ `); //Này để chuyển đường dẫn
+      if (response.data) {
+        
+        setNewArrivals(response.data.slice(0, 10)); // Giới hạn 10 món
+      }
+    } catch (err) {
+      setError('Failed to fetch new arrivals');
+      console.error('Error fetching new arrivals:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  useEffect(()=>{
-    const data=products.filter((item)=>item.inStock).slice(0,10);
-    setNewArrivals(data);
-  },[products])
+  useEffect(() => {
+    fetchNewArrivals();
+  }, []);
+
+  if (loading) return <div className="text-center py-10">Loading...</div>;
+  if (error) return <div className="text-center py-10 text-red-500">{error}</div>;
 
   return (
     <section className='max-padd-container py-22 xl:py-28 bg-white'>

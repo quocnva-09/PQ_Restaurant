@@ -17,9 +17,9 @@ import AddProducts from './pages/admin/AddProducts';
 import ListProducts from './pages/admin/ListProducts';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-import AdminLogin from './components/admin/Login';
-import { useUserContext } from './context/UserContext';
-import { Navigate } from 'react-router-dom';
+// import AdminLogin from './components/admin/Login';
+// import { useUserContext } from './context/UserContext';
+// import { Navigate } from 'react-router-dom';
 
 const MainLayout = ({ children }) => {
   return (
@@ -31,16 +31,15 @@ const MainLayout = ({ children }) => {
   );
 };
 
-// Protected Route Component
-const ProtectedAdminRoute = ({ children }) => {
-  const { isAdmin } = useUserContext();
+// const ProtectedAdminRoute = ({ children }) => {
+//   const { isAdmin } = useUserContext();
   
-  if (!isAdmin) {
-    return <Navigate to="/admin/login" replace />;
-  }
+//   if (!isAdmin) {
+//     return <Navigate to="/admin/login" replace />;
+//   }
 
-  return children;
-};
+//   return children;
+// };
 
 function App() {
   return (
@@ -59,11 +58,13 @@ function App() {
         <Route path='/signup-form' element={<MainLayout><Signup /></MainLayout>} />
         
         {/* Admin routes */}
-        <Route path='/admin'>
+        {/* <Route path='/admin'>
+         
           <Route path='login' element={<AdminLogin />} />
           <Route
             path='*'
             element={
+              
               <ProtectedAdminRoute>
                 <Sidebar />
               </ProtectedAdminRoute>
@@ -73,6 +74,11 @@ function App() {
             <Route path='add-product' element={<AddProducts />} />
             <Route path='list-product' element={<ListProducts />} />
           </Route>
+        </Route> */}
+        <Route path='/admin' element={<Sidebar />}>
+          <Route index element={<Dashboard />} />
+          <Route path='add-product' element={<AddProducts />} />
+          <Route path='list-product' element={<ListProducts />} />
         </Route>
       </Routes>
       {/* {isAdmin && <Footer />} */}

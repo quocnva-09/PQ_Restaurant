@@ -2,11 +2,11 @@ import React, {useState} from 'react'
 import { myAssets } from '../assets/assets'
 import { useUserContext } from '../context/UserContext';
 
+
 const Item = ({product}) => {
 
 const[size,setSize]=useState(product.sizes[0]);
 const {currency, addToCart}=useUserContext();
-
 
   return (
         <div className='relative mt-24 group'>

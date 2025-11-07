@@ -1,44 +1,50 @@
 import React, { useEffect, useState } from 'react'
 import { useUserContext } from '../../context/UserContext';
-import { myAssets } from '../../assets/assets';
+import { myAssets, dashboardData, dummyOrdersData } from '../../assets/assets';
 function Dashboard() {
 
-  const {user, currency}=useUserContext();
-  const [dashboardData, setDashbeardData]=useState({
-    order:[],
+  const {isAdmin, currency}=useUserContext();
+  const [dashBoardData, setDashboardData]=useState({
+    orders:[],
     totalOrders:0,
-    totoalRevenue:0,
+    totalRevenue:0,
   })
 
   const getDashboardData=()=>{
-    setDashbeardData();
+    setDashboardData(dashboardData);
   }
+
+  useEffect(()=>{
+    if(isAdmin){
+      getDashboardData();
+    }
+}, [isAdmin])
 
   return (
     <div>
       <div>
         <div>
-          <img src={myAssets.graph} className='hidden sm:flex w-8' />
+          <img src={myAssets.graph} className="hidden sm:flex w-8" />
           <div>
-            <h4>{dashboardData?.totalOrders?.toString().padStart(2,"0")}</h4>
+            <h4>{dashBoardData?.totalOrders?.toString().padStart(2,"0")}</h4>
             <h5 className='text-solid'>Total Sales</h5>
           </div>
         </div>
         <div>
-          <img src={myAssets.graph} className='hidden sm:flex w-8' />
+          <img src={myAssets.dollar} className="hidden sm:flex w-8" />
           <div>
-            <h4>{dashboardData?.totoalRevenue?.toFixed(2 || 0)}</h4>
+            <h4>{dashBoardData?.totalRevenue?.toFixed(2 || 0)}</h4>
             <h5 className='text-solid'>Total Earning</h5>
           </div>
         </div>
       </div>
       {/* All Orders */}
       <div>
-        {dashboardData.orders.map((order)=>(
-        <div key={order.id} className='bg-white p-2 mt-3 rounded-2xl'>
+        {dashBoardData.orders.map((order)=>(
+        <div key={order._id} className='bg-white p-2 mt-3 rounded-2xl'>
           <div className='flex flex-wrap gap-8 gap-y-3 mb-3'>
             {/* Order Items */}
-            {order.items.map((item,idx)=>(
+             {order.items.map((item,idx)=>(
               <div key={idx} className='text-gray-700 w-full lg:w-1/3'>
                 <div className='flex flex-[2] gap-x-3'>
                   <div className='flexCenter bg-primary rounded-xl'>
@@ -73,7 +79,7 @@ function Dashboard() {
             ))}
           </div>
             {/* Order Summary */}
-            <div className='flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 border-t border-gray-300 pt-3'>
+             <div className='flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 border-t border-gray-300 pt-3'>
               <div className='flex flex-col gap-2'>
                 <div className='flex items-center gap-x-2'>
                   <h5 className='text-sm font-medium'>OrderId:</h5>
@@ -124,7 +130,7 @@ function Dashboard() {
                 </div>
             </div>
         </div>
-      ))}
+       ))}
       </div>
     </div>
   )

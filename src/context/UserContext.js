@@ -14,10 +14,11 @@ export const UserContextProvider = ({children}) => {
     const navigate=useNavigate();
     const [cardItems, setCartItems]=useState([]);
     const[method,setMethod]=useState("COD");
-    const [isAdmin, setIsAdmin]=useState(() => {
-      const adminToken = localStorage.getItem('adminToken');
-      return !!adminToken; // Convert to boolean
-    });
+    // const [isAdmin, setIsAdmin]=useState(() => {
+    //   const adminToken = localStorage.getItem('adminToken');
+    //   return !!adminToken; // Convert to boolean
+    // });
+    const [isAdmin, setIsAdmin]=useState(true);
     //Clerk
     // const {user}=useUser();
 

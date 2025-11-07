@@ -4,6 +4,8 @@ import axios from 'axios';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { toast } from 'react-hot-toast';
 import { useUserContext } from '../../context/UserContext';
+import adminService from '../../services/adminService';
+import { environment } from '../../environment/environment';
 
 function AdminLogin() {
   const navigate = useNavigate();
@@ -28,13 +30,13 @@ function AdminLogin() {
     setIsLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:8084/web_order/auth/log-in', {
+      const response = await axios.post(`${environment.apiBaseUrl}/auth/log-in`, {
         username: formData.username,
         password: formData.password
       });
       
       // Kiểm tra response từ server
-      if (response.data) {
+      if (response.data === 1000) {
         // Lưu thông tin xác thực
         localStorage.setItem('adminToken', response.data.token);
         localStorage.setItem('adminUsername', formData.username);

@@ -1,13 +1,15 @@
 import React ,{useState,useMemo, useEffect} from 'react'
 import Item from './Item'
-import { useUserContext } from '../context/UserContext'
+// import { useUserContext } from '../context/UserContext'
 import ExploreMenu from './ExploreMenu'
 import SearchInput from './SearchInput'
+import { environment } from '../environment/environment';
+import axios from 'axios';
 
 const FoodItems = () => {
 
   const[categories,setCategories]=useState("All");
-  const {products, searchQuery}=useUserContext();
+  // const {products, searchQuery}=useUserContext();
   const[category,setCategory]=useState([]);
   const[type,setType]=useState([]);
   const[selectedSort,setSelectedSort]=useState("relevant");
@@ -15,9 +17,48 @@ const FoodItems = () => {
   const[currentPage,setCurrentPage]=useState(1);
   const[availableTypes,setAvailableTypes]=useState([]);
   const itemsPerPage=8;
+  const [products,setProducts]=useState([]);
+  const [catagories,setCatagories]=useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   //Predefined Categories list
-  const allCategories = useMemo(()=>["Udon Curry","Rice","Udon","Salad","Drink","Bento"],[])
+  // const allCategories = useMemo(()=>["Udon Curry","Rice","Udon","Salad","Drink","Bento"],[])
+
+  const fetchProducts = async () => {
+    const response = await axios.get(`${environment.apiBaseUrl}/ `); //Này để chuyển đường dẫn
+    if (response.data) // Điều kiện response
+    {
+        setProducts(response.data); 
+    }
+    return response;
+  };
+
+  const fetchCatagories = async () => {
+    const response = await axios.get(`${environment.apiBaseUrl}/ `); //Này để chuyển đường dẫn
+    if (response.data) // Điều kiện response
+    {
+        setCatagories(response.data); 
+    }
+    return response;
+  };
+  
+  // Gộp tất cả các fetch vào một useEffect
+  useEffect(()=>{
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        await Promise.all([fetchProducts(), fetchCatagories()]);
+      } catch (err) {
+        setError('Failed to fetch data');
+        console.error('Error fetching data:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  },[]);
 
   //Reusable Runction to togle filter values
   const toggleFilter = (value,setState)=>{
@@ -26,18 +67,35 @@ const FoodItems = () => {
 
   //Dynamically update types based on selected categories
   useEffect(()=>{
-    const selectedCat=category.length > 0 ? category :allCategories
-    const filteredProds=products.filter((p)=>selectedCat.includes(p.category))
-    const typeSet=new Set(filteredProds.map(p=>p.type))
-    const newAvailableTypes =[...typeSet].sort()
-    setAvailableTypes(newAvailableTypes)
+    const selectedCat = category.length > 0 ? category : catagories;
+    const filteredProds = products.filter((p) => p && p.category && selectedCat.includes(p.category));
+    const typeSet = new Set(filteredProds.map(p => p.type).filter(Boolean));
+    const newAvailableTypes = [...typeSet].sort();
+    setAvailableTypes(newAvailableTypes);
 
     //Remove unavailable types from selection
-    setType(prev=>prev.filter(t=>typeSet.has(t)))
-  },[category,products,allCategories])
+    setType(prev => prev.filter(t => typeSet.has(t)));
+  },[category, products, catagories])
 
-  const totalPages=7
+  const totalPages=8;
 
+  if (loading) {
+    return (
+      <div className="text-center py-10">
+        <div className="text-lg font-semibold">Loading...</div>
+        <div className="text-sm text-gray-500 mt-2">Loading...</div>
+      </div>
+    );
+  }
+  
+  if (error) {
+    return (
+      <div className="text-center py-10">
+        <div className="text-red-500 text-lg font-semibold">{error}</div>
+        <div className="text-sm text-gray-500 mt-2">{error}</div>
+      </div>
+    );
+  }
 
   return (
       <div className='max-padd-container !px-0 mt-[72px]'>
@@ -59,13 +117,17 @@ const FoodItems = () => {
             <div className='px-5 py-3 mt-4 bg-primary rounded-xl'>
               <h5 className='mb-4'>Categories</h5>
               <div className='flex flex-col gap-2 text-sm font-light'>
-                {allCategories.map((cat)=>(
-                  <label key={cat} className='flex gap-2 text-sm font-medium text-gray-30'>
-                    <input onChange={(e)=>toggleFilter(e.target.value,setCategory)} type="checkbox" value={cat} checked={category.includes(cat)} 
-                    className='w-3'/>
-                    {cat}
-                  </label>
-                ))}
+                {catagories && catagories.length > 0 ? (
+                  catagories.map((cat)=>(
+                    <label key={cat} className='flex gap-2 text-sm font-medium text-gray-30'>
+                      <input onChange={(e)=>toggleFilter(e.target.value,setCategory)} type="checkbox" value={cat} checked={category.includes(cat)} 
+                      className='w-3'/>
+                      {cat}
+                    </label>
+                  ))
+                ) : (
+                  <p className='text-sm text-gray-500'>Đang tải categories...</p>
+                )}
               </div>
             </div>
             {/* <div className='px-5 py-3 mt-4 bg-primary rounded-xl'>
