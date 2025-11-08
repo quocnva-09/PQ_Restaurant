@@ -7,17 +7,32 @@ import 'swiper/css';
 
 // import required modules
 import { Autoplay } from 'swiper/modules';
-import { promotion } from '../assets/assets';
+//import { promotion } from '../assets/assets';
 import ItemPromotions from './ItemPromotions';
+import PromotionService from "../api/PromotionService";
 
 const Promotion = () => {
 
     const [newPromotions,setNewPromotions]=useState([]);
     
-      useEffect(()=>{
-        const data=promotion.filter((item)=>item.inStock).slice(0,10);
-        setNewPromotions(data);
-      }, [promotion])
+      // useEffect(()=>{
+      //   const data=promotion.filter((item)=>item.inStock).slice(0,10);
+      //   setNewPromotions(data);
+      // }, [promotion])
+
+    //CODE GENERATED TỪ GPT CẦN TEST LẠI
+    useEffect(() => {
+    const fetchPromotions = async () => {
+      try {
+        const data = await PromotionService.getAll();
+        setNewPromotions(data.result);
+      } catch (error) {
+        console.error("Không thể tải khuyến mãi:", error);
+      }
+    };
+
+    fetchPromotions();
+  }, []);
 
   return (
       <section className='max-padd-container py-15 bg-white'>
