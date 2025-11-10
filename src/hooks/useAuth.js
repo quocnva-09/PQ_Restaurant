@@ -3,7 +3,9 @@ import { jwtDecode } from 'jwt-decode';
 import AuthService from '../services/AuthService'; // Giả định đường dẫn tới AuthService
 
 // Constants for Role Names (nên định nghĩa cố định để tránh lỗi chính tả)
-const ROLE_ADMIN = 'ADMIN';
+const ROLE_ADMIN_STRING = 'ROLE_ADMIN';
+const ROLE_USER_STRING = 'ROLE_USER';
+const ROLE_MANAGER_STRING = 'ROLE_MANAGER';
 
 export const useAuth = () => {
     const navigate = useNavigate();
@@ -24,9 +26,11 @@ export const useAuth = () => {
     
     const decodedToken = getDecodedToken();
 
-    // Lấy roles và các thông tin khác từ payload
-    // Giả định Back-end đính kèm roles, userId, và username vào JWT
-    const userRoles = decodedToken ? decodedToken.roles || [] : [];
+    // Lấy Role từ trường "scope" (Giả định là chuỗi "ROLE_USER" hoặc "ROLE_ADMIN")
+    const userScope = decodedToken?.scope || ''; 
+    
+    // Chuyển đổi Scope thành mảng để tương thích với hàm includes()
+    const userRoles = Array.isArray(userScope) ? userScope : [userScope];
     
     // 2. Kiểm tra trạng thái đăng nhập và hết hạn
     const isAuthenticated = () => {
@@ -48,7 +52,16 @@ export const useAuth = () => {
 
     // 3. Kiểm tra quyền Admin
     const isAdmin = () => {
-        return isAuthenticated() && userRoles.includes(ROLE_ADMIN);
+        return isAuthenticated() && userRoles.includes(ROLE_ADMIN_STRING);
+    };
+    // Kiểm tra quyền User
+    const isUser = () => {
+        // Trả về true nếu đã đăng nhập và có vai trò ROLE_USER
+        return isAuthenticated() && userRoles.includes(ROLE_USER_STRING);
+    };
+    // Kiểm tra quyền Manager
+    const isManager = () => {
+        return isAuthenticated() && userRoles.includes(ROLE_MANAGER_STRING);
     };
 
     // 4. Hàm Đăng xuất
@@ -68,7 +81,6 @@ export const useAuth = () => {
         // Xóa tất cả dữ liệu xác thực
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
-        localStorage.removeItem('userRoles'); // Chỉ xóa nếu bạn vẫn lưu nó riêng
         
         // Chuyển hướng về trang đăng nhập
         navigate('/login'); 
@@ -76,11 +88,14 @@ export const useAuth = () => {
 
     return { 
         isAuthenticated, 
-        isAdmin, 
+        isAdmin,
+        isUser,
+        isManager,
         userRoles,
         // Cung cấp các thông tin hữu ích từ token
-        userId: decodedToken?.userId, 
-        username: decodedToken?.username, 
+        username: decodedToken?.sub, // Lấy từ trường "sub"
+        issuedAt: decodedToken?.iat,
+        expirationTime: decodedToken?.exp,
         logout 
     };
 };

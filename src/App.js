@@ -18,6 +18,7 @@ import ListProducts from './pages/admin/ListProducts';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import AdminRoute from './components/AdminRoutes';
+import UserRoute from './components/UserRoute';
 // import AdminLogin from './components/admin/Login';
 // import { useUserContext } from './context/UserContext';
 // import { Navigate } from 'react-router-dom';
@@ -76,10 +77,19 @@ function App() {
             <Route path='list-product' element={<ListProducts />} />
           </Route>
         </Route> */}
+
+    {/* Tuyến đường riêng dành cho Admin */}
         <Route path='/admin' element={<AdminRoute />}>
           <Route index element={<Dashboard />} />
           <Route path='add-product' element={<AddProducts />} />
           <Route path='list-product' element={<ListProducts />} />
+        </Route>
+
+        {/* Tuyến đường riêng dành cho User */}
+        <Route element={<UserRoute />}>
+        <Route path='/cart' element={<MainLayout><Cart /></MainLayout>} />
+        <Route path='/address-form' element={<MainLayout><AddressForm /></MainLayout>} />
+        <Route path='/my-orders' element={<MainLayout><MyOrders /></MainLayout>} />
         </Route>
       </Routes>
       {/* {isAdmin && <Footer />} */}

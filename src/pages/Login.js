@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthService from '../services/AuthService';
+import {useAuth} from '../hooks/useAuth'
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -8,6 +9,7 @@ const Login = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { isAdmin, isManager } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,7 +20,7 @@ const Login = () => {
       const response = await AuthService.login({ username, password });
       
       // Giả định API trả về { token: "...", roles: ["USER", "ADMIN"] }
-      const { token, roles, refreshToken } = response.data.result; // Nhớ lấy refreshToken
+      const { token, refreshToken } = response.data.result; // Nhớ lấy refreshToken
       
       // 1. Lưu Token và Vai trò vào Local Storage
       localStorage.setItem('accessToken', token);
@@ -27,10 +29,14 @@ const Login = () => {
       alert('Đăng nhập thành công!');
       
       // 2. KIỂM TRA VAI TRÒ VÀ ĐIỀU HƯỚNG
-      if (roles && roles.includes('ADMIN')) {
-          navigate('/admin'); // Chuyển hướng đến trang Admin
-      } else {
-          navigate('/'); // Hoặc '/' - Chuyển hướng đến trang User/Trang chủ
+      const decoded = jwtDecode(token);
+      if (decoded.scope && decoded.scope.includes('ROLE_ADMIN')) {
+          navigate('/admin'); 
+      }
+      else if(decoded.scope && decoded.scope.includes('ROLE_MANAGER')) {
+        navigate('/manager'); 
+      }else {
+          navigate('/'); 
       }
 
     } catch (err) {
@@ -54,14 +60,14 @@ const Login = () => {
           {/* ... (Các input email/password không đổi) ... */}
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
-              <label htmlFor="email" className="sr-only">Email</label>
+              <label htmlFor="username" className="sr-only">Username</label>
               <input
                 id="username"
                 name="username"
                 type="text"
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Địa chỉ Email"
+                placeholder="Username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />

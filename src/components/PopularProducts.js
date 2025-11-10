@@ -19,13 +19,10 @@ const PopularProducts = () => {
     try {
         setLoading(true);
         setError(null);
-<<<<<<< HEAD
         const response = await axios.get(`${environment.apiBaseUrl}/products`); // Endpoint để lấy danh sách sản phẩm
-        if (response.data) // Điều kiện response
-=======
-        const response = await ProductService.getPopulars(); //Này để chuyển đường dẫn
+        // if (response.data) // Điều kiện response
+        // const response = await ProductService.getPopulars(); //Này để chuyển đường dẫn
         if (response.result) // Điều kiện response
->>>>>>> 8c1bbcfd3283c6ec2ede07760d68da1bec8066c3
         {
             // Lọc các item có popular và inStock đều là true
             const filteredData = response.result.filter((item) => item.inPopular && item.inStock);
