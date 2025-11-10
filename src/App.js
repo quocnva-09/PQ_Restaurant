@@ -53,9 +53,9 @@ function App() {
         <Route path='/menu' element={<MainLayout><Menu /></MainLayout>} />
         <Route path='/blog' element={<MainLayout><Blog /></MainLayout>} />
         <Route path='/contact' element={<MainLayout><Contact /></MainLayout>} />
-        <Route path='/cart' element={<MainLayout><Cart /></MainLayout>} />
+        {/* <Route path='/cart' element={<MainLayout><Cart /></MainLayout>} />
         <Route path='/address-form' element={<MainLayout><AddressForm /></MainLayout>} />
-        <Route path='/my-orders' element={<MainLayout><MyOrders /></MainLayout>} />
+        <Route path='/my-orders' element={<MainLayout><MyOrders /></MainLayout>} /> */}
         <Route path='/login' element={<MainLayout><Login /></MainLayout>} />
         <Route path='/signup' element={<MainLayout><Signup /></MainLayout>} />
         
