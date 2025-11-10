@@ -29,12 +29,11 @@ const Login = () => {
       alert('Đăng nhập thành công!');
       
       // 2. KIỂM TRA VAI TRÒ VÀ ĐIỀU HƯỚNG
-      const decoded = jwtDecode(token);
-      if (decoded.scope && decoded.scope.includes('ROLE_ADMIN')) {
-          navigate('/admin'); 
+      if (isAdmin()) {
+          navigate('/admin');
       }
-      else if(decoded.scope && decoded.scope.includes('ROLE_MANAGER')) {
-        navigate('/manager'); 
+      else if(isManager()) {
+          navigate('/manager'); 
       }else {
           navigate('/'); 
       }

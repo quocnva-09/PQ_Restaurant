@@ -86,7 +86,7 @@ function App() {
         </Route>
 
         {/* Tuyến đường riêng dành cho User */}
-        <Route element={<UserRoute />}>
+        <Route path= '/' element={<UserRoute />}>
         <Route path='/cart' element={<MainLayout><Cart /></MainLayout>} />
         <Route path='/address-form' element={<MainLayout><AddressForm /></MainLayout>} />
         <Route path='/my-orders' element={<MainLayout><MyOrders /></MainLayout>} />

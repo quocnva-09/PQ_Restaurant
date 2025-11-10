@@ -3,9 +3,9 @@ import { jwtDecode } from 'jwt-decode';
 import AuthService from '../services/AuthService'; // Giả định đường dẫn tới AuthService
 
 // Constants for Role Names (nên định nghĩa cố định để tránh lỗi chính tả)
-const ROLE_ADMIN_STRING = 'ROLE_ADMIN';
-const ROLE_USER_STRING = 'ROLE_USER';
-const ROLE_MANAGER_STRING = 'ROLE_MANAGER';
+const ROLE_ADMIN_STRING = "ADMIN";
+const ROLE_USER_STRING = "USER";
+const ROLE_MANAGER_STRING = "MANAGER";
 
 export const useAuth = () => {
     const navigate = useNavigate();
@@ -27,7 +27,7 @@ export const useAuth = () => {
     const decodedToken = getDecodedToken();
 
     // Lấy Role từ trường "scope" (Giả định là chuỗi "ROLE_USER" hoặc "ROLE_ADMIN")
-    const userScope = decodedToken?.scope || ''; 
+    const userScope = decodedToken?.scope?.trim() || '';
     
     // Chuyển đổi Scope thành mảng để tương thích với hàm includes()
     const userRoles = Array.isArray(userScope) ? userScope : [userScope];
@@ -52,16 +52,16 @@ export const useAuth = () => {
 
     // 3. Kiểm tra quyền Admin
     const isAdmin = () => {
-        return isAuthenticated() && userRoles.includes(ROLE_ADMIN_STRING);
+        return isAuthenticated() && userScope === ROLE_ADMIN_STRING;
     };
     // Kiểm tra quyền User
     const isUser = () => {
         // Trả về true nếu đã đăng nhập và có vai trò ROLE_USER
-        return isAuthenticated() && userRoles.includes(ROLE_USER_STRING);
+        return isAuthenticated() && userScope === ROLE_USER_STRING;
     };
     // Kiểm tra quyền Manager
     const isManager = () => {
-        return isAuthenticated() && userRoles.includes(ROLE_MANAGER_STRING);
+        return isAuthenticated() && userScope === ROLE_MANAGER_STRING;
     };
 
     // 4. Hàm Đăng xuất
