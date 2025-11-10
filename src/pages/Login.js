@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import AuthService from '../services/AuthService';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -15,7 +15,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await AuthService.login({ email, password });
+      const response = await AuthService.login({ username, password });
       
       // Giả định API trả về { token: "...", roles: ["USER", "ADMIN"] }
       const { token, roles, refreshToken } = response.data.result; // Nhớ lấy refreshToken
@@ -57,14 +57,14 @@ const Login = () => {
             <div>
               <label htmlFor="email" className="sr-only">Email</label>
               <input
-                id="email"
-                name="email"
-                type="email"
+                id="username"
+                name="username"
+                type="text"
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Địa chỉ Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
             </div>
             <div>
