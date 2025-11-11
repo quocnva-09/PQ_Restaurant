@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthService from '../services/AuthService';
 import {useAuth} from '../hooks/useAuth'
+import {useAuthContext} from '../context/AuthContext'
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -10,6 +11,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { isAdmin, isManager } = useAuth();
+  const { refreshAuthStatus } = useAuthContext();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,7 +27,7 @@ const Login = () => {
       // 1. Lưu Token và Vai trò vào Local Storage
       localStorage.setItem('accessToken', token);
       localStorage.setItem('refreshToken', refreshToken); // Lưu Refresh Token
-
+      refreshAuthStatus();
       alert('Đăng nhập thành công!');
       
       // 2. KIỂM TRA VAI TRÒ VÀ ĐIỀU HƯỚNG

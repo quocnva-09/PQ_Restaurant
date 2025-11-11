@@ -18,7 +18,7 @@ export const UserContextProvider = ({children}) => {
     //   const adminToken = localStorage.getItem('adminToken');
     //   return !!adminToken; // Convert to boolean
     // });
-    const [isAdmin, setIsAdmin]=useState(true);
+    const [isUser, setIsUser]=useState(true);
     //Clerk
     // const {user}=useUser();
 
@@ -88,8 +88,8 @@ export const UserContextProvider = ({children}) => {
         getCartAmount,
         method,
         setMethod,
-        isAdmin,
-        setIsAdmin,
+        isUser,
+        setIsUser,
     };
     
   return <UserContext.Provider value={value}>

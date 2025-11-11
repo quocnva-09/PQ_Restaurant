@@ -19,6 +19,8 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import AdminRoute from './components/AdminRoutes';
 import UserRoute from './components/UserRoute';
+import PublicRoute from './components/PublicRoutes';
+import { AuthProvider } from './context/AuthContext';
 // import AdminLogin from './components/admin/Login';
 // import { useUserContext } from './context/UserContext';
 // import { Navigate } from 'react-router-dom';
@@ -47,18 +49,18 @@ function App() {
   return (
     <main>
       <Toaster position='bottom-right' />
+      <AuthProvider>
       <Routes>
         {/* Public routes with Header and Footer */}
         <Route path='/' element={<MainLayout><Home /></MainLayout>} />
         <Route path='/menu' element={<MainLayout><Menu /></MainLayout>} />
         <Route path='/blog' element={<MainLayout><Blog /></MainLayout>} />
         <Route path='/contact' element={<MainLayout><Contact /></MainLayout>} />
-        {/* <Route path='/cart' element={<MainLayout><Cart /></MainLayout>} />
-        <Route path='/address-form' element={<MainLayout><AddressForm /></MainLayout>} />
-        <Route path='/my-orders' element={<MainLayout><MyOrders /></MainLayout>} /> */}
-        <Route path='/login' element={<MainLayout><Login /></MainLayout>} />
-        <Route path='/signup' element={<MainLayout><Signup /></MainLayout>} />
-        
+
+        <Route element={<PublicRoute />}>
+          <Route path='/login' element={<MainLayout><Login /></MainLayout>} />
+          <Route path='/signup' element={<MainLayout><Signup /></MainLayout>} />
+        </Route>
         {/* Admin routes */}
         {/* <Route path='/admin'>
          
@@ -87,11 +89,12 @@ function App() {
 
         {/* Tuyến đường riêng dành cho User */}
         <Route path= '/' element={<UserRoute />}>
-        <Route path='/cart' element={<MainLayout><Cart /></MainLayout>} />
-        <Route path='/address-form' element={<MainLayout><AddressForm /></MainLayout>} />
-        <Route path='/my-orders' element={<MainLayout><MyOrders /></MainLayout>} />
+          <Route path='/cart' element={<MainLayout><Cart /></MainLayout>} />
+          <Route path='/address-form' element={<MainLayout><AddressForm /></MainLayout>} />
+          <Route path='/my-orders' element={<MainLayout><MyOrders /></MainLayout>} />
         </Route>
       </Routes>
+      </AuthProvider>
       {/* {isAdmin && <Footer />} */}
     </main>
   );
