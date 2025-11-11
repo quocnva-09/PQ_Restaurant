@@ -21,10 +21,10 @@ const NewArrivals = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axios.get(`${environment.apiBaseUrl}/ `); //Này để chuyển đường dẫn
-      if (response.data) {
+      const response = await axios.get(`${environment.apiBaseUrl}/products/latest-products`); //Này để chuyển đường dẫn
+      if (response.data.result) {
         
-        setNewArrivals(response.data.slice(0, 10)); // Giới hạn 10 món
+        setNewArrivals(response.data.result.slice(0, 10)); // Giới hạn 10 món
       }
     } catch (err) {
       setError('Failed to fetch new arrivals');

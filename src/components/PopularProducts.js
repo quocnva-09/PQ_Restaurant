@@ -19,13 +19,13 @@ const PopularProducts = () => {
     try {
         setLoading(true);
         setError(null);
-        const response = await axios.get(`${environment.apiBaseUrl}/products`); // Endpoint để lấy danh sách sản phẩm
+        const response = await axios.get(`${environment.apiBaseUrl}/products/popular-products`); // Endpoint để lấy danh sách sản phẩm
         // if (response.data) // Điều kiện response
         // const response = await ProductService.getPopulars(); //Này để chuyển đường dẫn
-        if (response.result) // Điều kiện response
+        if (response.data.result) // Điều kiện response
         {
             // Lọc các item có popular và inStock đều là true
-            const filteredData = response.result.filter((item) => item.inPopular && item.inStock);
+            const filteredData = response.data.result.filter((item) => item.inPopular && item.inStock);
             setItems(filteredData); 
         }
     } catch (err) {
