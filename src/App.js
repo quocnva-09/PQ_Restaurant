@@ -25,6 +25,7 @@ import useAuth from './hooks/useAuth';
 // import AdminLogin from './components/admin/Login';
 // import { useUserContext } from './context/UserContext';
 import { Navigate } from 'react-router-dom';
+import ForgotPassword from './pages/ForgotPassword';
 
 const MainLayout = ({ children }) => {
   return (
@@ -69,7 +70,8 @@ function App() {
         <Route path='/contact' element={<MainLayout><Contact /></MainLayout>} />
         <Route path='/login' element={<MainLayout><Login /></MainLayout>} />
         <Route path='/signup' element={<MainLayout><Signup /></MainLayout>} />
-
+        <Route path='/forgot-password' element={<MainLayout><ForgotPassword /></MainLayout>} />
+        
         <Route element={<PublicRoute />}>
           <Route path='/login' element={<MainLayout><Login /></MainLayout>} />
           <Route path='/signup' element={<MainLayout><Signup /></MainLayout>} />

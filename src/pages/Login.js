@@ -110,6 +110,14 @@ const Login = () => {
             </button>
           </div>
         </form>
+        <div className="text-center mt-4">
+            <Link 
+                to="/forgot-password" 
+                className="inline-block align-baseline font-bold text-sm text-blue-600 hover:text-blue-800"
+            >
+                Bạn quên mật khẩu?
+            </Link>
+        </div>
 
         {/* PHẦN ĐƯỜNG DẪN MỚI */}
         <div className="text-sm text-center mt-6">
