@@ -84,16 +84,19 @@ const Header = () => {
 
         {/* USER PROFILE */}
         <div>
-          {isUser ? <UserButton /> : 
-          `
-            <div>
           <button onClick={()=>{
                 navigate("/login")}} className='px-6 py-3 active:scale-95 transition bg-solid border-gray-500/20 text-black text-sm font-medium rounded-full cursor-pointer flex justify-center items-center gap-2'>
           Login
           <img src={myAssets.user} alt="" />
         </button>
         </div>
-          `}
+        
+        <div>
+          {(isUser === true)  ? <UserButton /> : 
+            (
+              ''
+            )
+          }
         </div>
         
         {/* <div>

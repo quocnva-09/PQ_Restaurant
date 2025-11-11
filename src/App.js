@@ -84,10 +84,12 @@ function App() {
 
     {/* Tuyến đường riêng dành cho Admin */}
         <Route path='/admin' element={<AdminRoute />}>
-          <Route index element={<Sidebar />} />
-          <Route path='dashboard' element={<Dashboard />} />
-          <Route path='add-product' element={<AddProducts />} />
-          <Route path='list-product' element={<ListProducts />} />
+          <Route element={<Sidebar />}>
+            <Route index element={<Dashboard />} />
+            <Route path='add-product' element={<AddProducts />} />
+            <Route path='list-product' element={<ListProducts />} />
+          </Route>
+          <Route path="login" element={<MainLayout><Login /></MainLayout>} />
         </Route>
 
         {/* Tuyến đường riêng dành cho User */}

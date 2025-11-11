@@ -1,13 +1,16 @@
 import React, { useEffect } from 'react'
-import { useUserContext } from '../../context/UserContext';
+// import { useUserContext } from '../../context/UserContext';
+
 import { myAssets } from '../../assets/assets';
-import { Link, NavLink, Outlet } from 'react-router-dom';
+import { useNavigate, Link, NavLink, Outlet } from 'react-router-dom';
+import useAuth from '../../hooks/useAuth';
 // import AdminNavbar from './Navbar';
 import AdminButton from './AdminButton'
 // import {UserButton} from "@clerk"
 
 function Sidebar() {
-  const {navigate, isAdmin} = useUserContext();
+  const navigate = useNavigate();
+  const { isAdmin } = useAuth();
 
   const navItems = [
     {
@@ -29,7 +32,7 @@ function Sidebar() {
 
   useEffect(() => {
     if (!isAdmin) {
-      navigate('/admin/login');
+      navigate('/login');
     }
   }, [isAdmin, navigate]);
 
