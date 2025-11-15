@@ -15,7 +15,6 @@ import Sidebar from './components/admin/Sidebar';
 import Dashboard from './pages/admin/Dashboard';
 import AddProducts from './pages/admin/AddProducts';
 import ViewProducts from './pages/admin/ViewProducts';
-import ListProduct from './pages/admin/ListProduct';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import AdminRoute from './components/AdminRoutes';
@@ -119,7 +118,6 @@ function App() {
         <Route path='/admin' element={<Sidebar />}>
         <Route index element={<Dashboard />} />
             <Route path='add-product' element={<AddProducts />} />
-            {/* <Route path='list-product' element={<ListProduct />} /> */}
             <Route path='list-product' element={<ViewProducts />} />
             <Route path='list-promotion' element={<ViewProducts />} />
             <Route path='list-banner' element={<ViewProducts />} />

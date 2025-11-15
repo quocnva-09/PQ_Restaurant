@@ -61,11 +61,51 @@ function Sidebar() {
   return (
     <div >
       <div className='mx-auto max-w-[1440px] flex flex-col md:flex-row bg-white'>
-        {/* SideBar */}
-        <div className='max-md:flexCenter flex flex-col bg-primary sm:m-3 md:min-w-[20%] md:min-h-[97vh] rounded-xl shadow'>
-          <div className='flex flex-col gap-y-6 max-md:items-center md:flex-col md:pt-5'>
-            <div className='w-full flex justify-between md:flex-col'>
-              {/* Logo */}
+
+        {/* Mobile Navbar */}
+        <div className='md:hidden w-full bg-primary shadow-xl rounded-b-xl'>
+          
+          {/* A. Logo và User Info (Hàng trên cùng) */}
+
+          <div className='flex justify-between items-center p-3'>
+            {/* Logo */}
+            <Link to={'/'} className='flex items-end'>
+              <img src={myAssets.logo} alt="logoImg" className='h-12' />
+              <div className='h-12'>
+                <span className='font-extrabold text-2xl relative top-1 left-1 text-gray-50'>PQ</span>
+                <span className='font-extrabold text-xs relative left-1 tracking-[5px] uppercase'>Restaurant</span>
+              </div>
+            </Link>
+            {/* User Info (Admin Avatar) */}
+            <div className='flex items-center gap-2 text-white'>
+              {/* Giả định AdminButton chứa Avatar/Admin Name */}
+              <AdminButton /> 
+            </div>
+          </div>
+
+          {/* B. Menu Ngang (Hàng thứ hai) */}
+          <div className='flex overflow-x-auto gap-x-1 p-2'>
+            {navItems.map((link) => (
+              <NavLink
+                key={link.label}
+                to={link.path}
+                end={link.path === "/admin"}
+                className={({ isActive }) =>
+                  isActive
+                    ? "flex-shrink-0 text-center p-3 text-[13px] font-bold cursor-pointer h-10 bg-solid/10 max-md:border-b-4 md:border-r-4 border-solid" // Màu đỏ tương ứng hình bên phải
+                    : "flex-shrink-0 text-center p-3 text-[13px] font-bold cursor-pointer h-10 rounded-md"
+                }
+              >
+                <div>{link.label}</div>
+              </NavLink>
+            ))}
+          </div>
+        </div>
+
+        {/* Full Screen */}
+        <div className='hidden md:flex flex-col bg-primary sm:m-3 md:min-w-[20%] md:min-h-[97vh] rounded-xl shadow'>
+          {/* A. Logo */}
+          <div className='flex flex-col'>
               <div className='flex flex-1 p-3 lg:pl-12'>
                 <Link to={'/'} className='flex items-end'>
                   <img src={myAssets.logo} alt="logoImg" className='h-12'/>
@@ -75,13 +115,16 @@ function Sidebar() {
                   </div>
                 </Link>
               </div>
+
               {/* User */}
-              <div className='md:hidden flex items-center gap-3 md:bg-primary rounded-b-xl p-2 pl-5 lg:pl-10 md:mt-10'>
+              <div className='flex items-center gap-3 p-3 pl-6 mt-4'>
                 {/* <AdminNavbar /> */}
                 <AdminButton />
               </div>
+              <div className='mt-2 border-t border-gray-200'></div>
             </div>
-            <div className='flex md:flex-col md:gap-x-5 gap-y-8 md:mt-4'>
+
+            <div className='flex md:flex-col md:gap-x-5 gap-y-8 md:mt-4 '>
               {navItems.map((link) => 
               (
                  <NavLink
@@ -100,11 +143,8 @@ function Sidebar() {
               ))}
             </div>
           </div>
-          <div className='hidden md:flex items-center gap-3 md:bg-primary rounded-b-xl p-2 pl-5 lg:pl-10 md:mt-10 border-t border-slate-900/15'>
-            {/* <AdminNavbar /> */}
-            <AdminButton />
-          </div>
-        </div>
+
+
         {/* Right Side */}
         <Outlet />
       </div>
