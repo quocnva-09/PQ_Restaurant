@@ -1,11 +1,20 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { dummyProducts } from '../assets/assets';
+// import { dummyProducts } from '../assets/assets';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify'; // Dùng toastify thay vì react-hot-toast
+import { toast } from 'react-toastify';
 import CartService from '../services/CartService'; 
-import UserService from '../services/UserService'; 
+import UserService from '../services/UserService';
+import ProductService from '../services/ProductService';
 
 const UserContext = createContext();
+const formatCurrency = (value) => {
+    if (typeof value !== "number" || isNaN(value)) return "";
+    return new Intl.NumberFormat("vi-VN", {
+        style: "currency",
+        currency: "VND",
+        minimumFractionDigits: 0, // Không hiển thị số lẻ
+    }).format(value);
+};
 
 export const UserContextProvider = ({ children }) => {
     // --- State Backend / User ---
@@ -14,15 +23,37 @@ export const UserContextProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false); // Trạng thái đăng nhập
     const [userLoading, setUserLoading] = useState(true); // Trạng thái tải thông tin user
 
-    // --- State Cục bộ / Giao diện ---
+    // --- State Cục bộ / Sản phẩm ---
     const [products, setProducts] = useState([]);
+    const [productLoading, setProductLoading] = useState(false);
+
     const [searchQuery, setSearchQuery] = useState("");
     const [method, setMethod] = useState("COD");
     
     // Giữ nguyên các hằng số
-    const currency = process.env.REACT_APP_CURRENCY || "đ";
     const delivery_charges = 20000;
     const navigate = useNavigate();
+    
+    // Hàm này sẽ được gọi khi component mount hoặc khi cần làm mới danh sách sản phẩm.
+    const fetchProducts = useCallback(async (keyword = '', categoryId = 0, page = 0, limit = 10) => {
+        setProductLoading(true);
+        try {
+            // Gọi ProductService.getProducts
+            const response = await ProductService.getProducts(keyword, categoryId, page, limit);
+            
+            // Giả định response.data là ApiResponse<ProductListResponse>
+            // và danh sách sản phẩm nằm trong response.data.result.content
+            const productList = response.result?.content || [];
+            
+            setProducts(productList);
+        } catch (error) {
+            console.error("Lỗi khi tải danh sách sản phẩm:", error);
+            toast.error("Không thể tải sản phẩm. Vui lòng thử lại.");
+            setProducts([]);
+        } finally {
+            setProductLoading(false);
+        }
+    }, []);
 
     // --- Lấy thông tin User khi khởi động ---
     // Giả định hàm này kiểm tra token và tải thông tin user
@@ -123,12 +154,12 @@ export const UserContextProvider = ({ children }) => {
     // Lấy tổng tiền (Dựa vào trường 'totalAmount' hoặc tính toán thủ công)
     const getCartAmount = () => {
         if (!cart) return 0;
-        // Lý tưởng nhất là Backend tính toán và gửi trường 'totalPrice' hoặc 'totalAmount'
-        // Nếu không có, ta phải tính thủ công (Dựa trên dữ liệu BE)
-        
         return cart.items?.reduce((total, item) => {
-            // Giả định item có trường 'price' và 'quantity'
-            return total + (item.price * item.quantity); 
+        const product = products.find(p => p.id === item.productId);
+        // Lấy giá dựa trên size đã chọn trong giỏ hàng
+        const priceData = product?.prices.find(p => p.size === item.size); 
+        const itemPrice = priceData ? priceData.price : 0;
+        return total + (itemPrice * item.quantity);
         }, 0) || 0;
     };
     
@@ -137,18 +168,13 @@ export const UserContextProvider = ({ children }) => {
     useEffect(() => {
         fetchMyInfo(); // Tải thông tin user khi khởi động
         fetchProducts(); // Giữ lại logic tải dummy product của bạn
-    }, [fetchMyInfo]); 
+    }, [fetchMyInfo, fetchProducts]); 
     
     useEffect(() => {
         if (isAuthenticated) {
             fetchCart(); // Tải giỏ hàng khi user đã đăng nhập
         }
     }, [isAuthenticated, fetchCart]);
-    
-    // Giữ lại logic tải dummy product của bạn
-    const fetchProducts = () => {
-        setProducts(dummyProducts);
-    };
 
 
     const value = {
@@ -172,8 +198,10 @@ export const UserContextProvider = ({ children }) => {
         
         // General & Products
         products,
+        productLoading,
         fetchProducts,
-        currency,
+
+        formatCurrency,
         delivery_charges,
         navigate,
         searchQuery,

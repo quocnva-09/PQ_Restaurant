@@ -7,7 +7,7 @@ const Items = ({product}) => {
 
 const[size, setSize]=useState(product.prices[0]?.size || "");
 const[price, setPrice] = useState(product.prices[0]?.price || 0);
-const {currency, addToCart}=useUserContext();
+const {addToCart}=useUserContext();
 const imageSrc = myAssets[product.productImage];
 const formatCurrency = (value) => {
     if (typeof value !== "number" || isNaN(value)) return "";
