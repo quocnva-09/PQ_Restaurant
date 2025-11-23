@@ -14,10 +14,10 @@ const Cart = () => {
     cart,
     updateQuantity,
     removeFromCart, 
-    isAuthenticated, 
+    isUser, 
   }=useUserContext();
 
-  const cartItems = cart?.items || [];
+  const cartItems = cart?.cartItems || [];
 
 
   // Tăng số lượng
@@ -43,8 +43,8 @@ const Cart = () => {
           removeFromCart(itemId);
       }
     };
-    
-    if (!isAuthenticated) {
+
+    if (!isUser) {
         return (
             <div className='max-padd-container py-16 xl:py-28 text-center bg-primary'>
                 <h2 className='text-2xl font-bold'>Vui lòng đăng nhập để xem giỏ hàng</h2>

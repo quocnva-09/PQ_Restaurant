@@ -5,7 +5,7 @@ import { myAssets } from '../assets/assets'
 
 const MyOrders = () => {
 
-  const {currency, isAuthenticated}=useUserContext();
+  const {currency, isUser}=useUserContext();
   const [orders, setOrders]=useState([]);
 
   const loadOrderData = () => {
@@ -13,10 +13,10 @@ const MyOrders = () => {
   }
 
   useEffect(()=>{
-    if(isAuthenticated){
+    if(isUser){
       loadOrderData()
     }
-  },[isAuthenticated])
+  },[isUser])
   
   return (
     <div className='max-padd-container py-16 pt-28 bg-primary'>
