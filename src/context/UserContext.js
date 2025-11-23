@@ -20,12 +20,19 @@ const formatCurrency = (value) => {
 export const UserContextProvider = ({ children }) => {
     // --- Lấy Auth State từ Hook ---
     const { 
-        isAuthenticated: isAuth, // Đổi tên biến để tránh trùng lặp
+        isAuthenticated, // Đổi tên biến để tránh trùng lặp
         userRoles,
         username,
         logout: authLogout, // Đổi tên hàm để tránh trùng lặp
         ...authData // Các dữ liệu khác từ token
     } = useAuth();
+
+    // --- State cho isAuth ---
+    const [isAuth, setIsAuth] = useState(false);
+
+    useEffect(() => {
+        setIsAuth(isAuthenticated());   // Gán giá trị trả về (true/false)
+    }, []);
 
     // --- State Cục bộ / Sản phẩm ---
     const [cart, setCart] = useState(null); // Giỏ hàng: CartResponse object từ BE
@@ -161,7 +168,7 @@ export const UserContextProvider = ({ children }) => {
     const value = {
         // Auth & User (Từ useAuth)
         user: { username, ...authData }, // Cung cấp thông tin user (username, expirationTime,...)
-        isAuthenticated: isAuth, // Trạng thái đăng nhập
+        isAuth, // Trạng thái đăng nhập
         userRoles, // Vai trò của user
         logout,
         

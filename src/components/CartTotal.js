@@ -12,7 +12,7 @@ function CartTotal() {
     delivery_charges,
     getCartCount,
     getCartAmount,
-    isAuthenticated,
+    isAuth,
   } =useUserContext();
 
   const [addresses, setAddresses] = useState([]);
@@ -47,14 +47,14 @@ function CartTotal() {
 
     useEffect(() => {
         // Chỉ fetch nếu đã đăng nhập và user chi tiết đã có (nếu dùng fetchUserDetails)
-        if(isAuthenticated) {
+        if(isAuth) {
             fetchAddresses();
         } else {
             setAddressLoading(false);
             setAddresses([]);
             setSelectedAddress(null);
         }
-    }, [isAuthenticated, fetchAddresses]);
+    }, [isAuth, fetchAddresses]);
 
     // --- Logic Tính Toán ---
     const cartAmount = getCartAmount(); // Tổng tiền sản phẩm
@@ -66,7 +66,7 @@ function CartTotal() {
     
     // --- Xử lý Đặt hàng (Checkout) ---
     const handleCheckout = () => {
-      if (!isAuthenticated) {
+      if (!isAuth) {
             toast.error("Vui lòng đăng nhập để tiến hành đặt hàng.");
             navigate('/login');
             return;
@@ -83,7 +83,7 @@ function CartTotal() {
         // navigate('/checkout-page');
     };
 
-    if (!isAuthenticated) {
+    if (!isAuth) {
         // Có thể hiển thị component trống nếu Cart.js đã xử lý trạng thái chưa đăng nhập
         return null; 
     }

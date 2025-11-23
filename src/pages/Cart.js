@@ -14,7 +14,7 @@ const Cart = () => {
     cart,
     updateQuantity,
     removeFromCart, 
-    isAuthenticated, 
+    isAuth, 
   }=useUserContext();
 
   const cartItems = cart?.items || [];
@@ -44,7 +44,7 @@ const Cart = () => {
       }
     };
     
-    if (!isAuthenticated) {
+    if (!isAuth) {
         return (
             <div className='max-padd-container py-16 xl:py-28 text-center bg-primary'>
                 <h2 className='text-2xl font-bold'>Vui lòng đăng nhập để xem giỏ hàng</h2>
