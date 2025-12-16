@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 import AuthService from '../services/AuthService';
 const ForgotPassword = () => {
     const [formData, setFormData] = useState({
@@ -111,19 +110,6 @@ const ForgotPassword = () => {
                     </div>
                 </form>
             </div>
-            {/* ToastContainer phải có để hiển thị toast */}
-            <ToastContainer
-                position="top-right"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="colored"
-            />
         </div>
     );
 };

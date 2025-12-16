@@ -3,8 +3,8 @@ import Title from '../components/Title'
 import CartTotal from '../components/CartTotal'
 import { useUserContext } from '../context/UserContext'
 import CartItem from '../components/CartItem'
-import {ToastContainer, toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify'
+
 import useAuth from '../hooks/useAuth';
 
 const Cart = () => {
@@ -61,19 +61,7 @@ const Cart = () => {
           </div>
             </div>
         </div>
-        <ToastContainer
-            position="top-right"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="colored"
-        />
-    </div>
+    </div> 
   )
 }
 

@@ -5,8 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import CartService from '../services/CartService'; 
 import ProductService from '../services/ProductService';
 import useAuth from '../hooks/useAuth';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
 
 const UserContext=createContext();
@@ -210,19 +209,7 @@ export const UserContextProvider = ({children}) => {
     
   return <UserContext.Provider value={value}>
         {children}
-        <ToastContainer
-            position="top-right"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="colored"
-        />
-    </UserContext.Provider>;
+    </UserContext.Provider>; 
 };
 
 export const useUserContext = ()=>useContext(UserContext)

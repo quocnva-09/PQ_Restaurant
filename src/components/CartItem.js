@@ -2,8 +2,7 @@ import React, {useState, useEffect} from 'react'
 import { myAssets } from '../assets/assets'
 import ProductService from '../services/ProductService'; 
 import { useUserContext } from '../context/UserContext'
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
 const CartItem = ({cart}) => {
 
@@ -91,18 +90,6 @@ const CartItem = ({cart}) => {
         className='cursor-pointer mx-auto'>
             <img src={myAssets.cart_remove} alt="" width={22} />
         </button>
-        <ToastContainer
-            position="top-right"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="colored"
-        />
     </div>
     );
 

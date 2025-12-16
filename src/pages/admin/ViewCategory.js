@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import CategoryService from '../../services/CategoryService';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { myAssets } from '../../assets/assets'; 
 
@@ -116,18 +115,6 @@ function ViewCategory() {
 
                 
             </div>
-            <ToastContainer
-                position="top-right"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="colored"
-            />
         </div>
     );
 }

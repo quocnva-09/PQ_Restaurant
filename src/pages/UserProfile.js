@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import UserService from '../services/UserService';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import UserNavbar from '../components/UserNavbar';
 import Title from '../components/Title';
@@ -206,18 +205,6 @@ function UserProfile() {
                     </div>
                 </form>
             </div>
-            <ToastContainer
-                position="top-right"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="colored"
-            />
         </div>
     );
 }

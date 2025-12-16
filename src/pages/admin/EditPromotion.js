@@ -1,8 +1,7 @@
 // src/components/AddPromotion.jsx (Chỉnh sửa để dùng key/string cho img)
 import React, { useState, useEffect } from 'react';
 import PromotionService from '../../services/PromotionService';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
 // Giả định: Import thư viện assets của bạn để xem trước
 import { myAssets } from '../../assets/assets'; 
@@ -169,18 +168,7 @@ function EditPromotion() {
                     </button>
                 </div>
             </form>
-            <ToastContainer
-                position="top-right"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="colored"
-            />
+
         </div>
     );
 }

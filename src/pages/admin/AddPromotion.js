@@ -1,8 +1,7 @@
 // src/components/AddPromotion.jsx (Chỉnh sửa để dùng key/string cho img)
 import React, { useState } from 'react';
 import PromotionService from '../../services/PromotionService';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
 const initialFormState = {
@@ -140,18 +139,7 @@ function AddPromotion() {
                     </button>
                 </div>
             </form>
-            <ToastContainer
-                position="top-right"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="colored"
-            />
+
         </div>
     );
 }

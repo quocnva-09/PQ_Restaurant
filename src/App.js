@@ -9,7 +9,8 @@ import Blog from './pages/Blog';
 import Contact from './pages/Contact';
 import Cart from './pages/Cart';
 import MyOrders from './pages/MyOrders';
-import { Toaster } from 'react-hot-toast';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Sidebar from './components/admin/Sidebar';
 import Dashboard from './pages/admin/Dashboard';
 import AddProducts from './pages/admin/AddProducts';
@@ -67,7 +68,18 @@ const ProtectedAdminRoute = ({ children }) => {
 function App() {
   return (
     <main>
-      <Toaster position='bottom-right' />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <AuthProvider>
       <Routes>
         {/* Public routes with Header and Footer */}

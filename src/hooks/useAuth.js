@@ -2,8 +2,7 @@ import {useCallback, useMemo, useState, useEffect}from 'react'
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import AuthService from '../services/AuthService'; // Giả định đường dẫn tới AuthService
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
 // Constants for Role Names (nên định nghĩa cố định để tránh lỗi chính tả)
 const ROLE_ADMIN_STRING = "ROLE_ADMIN";

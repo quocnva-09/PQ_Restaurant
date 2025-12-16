@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ProductService from '../services/ProductService'; 
 import Items from './Items'; 
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
 const ITEMS_PER_PAGE = 8; 
 
@@ -112,18 +111,7 @@ const ProductListSection = ({ selectedCategoryId, searchKeyword }) => {
                     </button>
                 </div>
             )}
-            <ToastContainer
-                position="top-right"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="colored"
-            />
+
         </div>
     );
 }

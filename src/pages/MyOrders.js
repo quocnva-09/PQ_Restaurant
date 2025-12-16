@@ -3,8 +3,7 @@ import Title from '../components/Title'
 import { useUserContext } from '../context/UserContext'
 import { myAssets } from '../assets/assets'
 import OrderService from '../services/OrderSevice';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
 const MyOrders = () => {
 
@@ -154,18 +153,6 @@ const MyOrders = () => {
         </div>
       ))
     )}
-    <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="colored"
-      />
     </div>
   )
 }

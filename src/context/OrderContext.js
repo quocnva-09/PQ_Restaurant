@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 import OrderService from '../services/OrderSevice';
 import { useUserContext } from './UserContext'
 
@@ -88,18 +87,6 @@ export const CartProvider = ({ children }) => {
     return (
         <OrderContext.Provider value={value}>
             {children}
-            <ToastContainer
-                position="top-right"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="colored"
-            />
         </OrderContext.Provider>
         
     );
