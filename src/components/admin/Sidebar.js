@@ -19,6 +19,11 @@ function Sidebar() {
       icon: myAssets.dashboard,
     },
     {
+      path:"/admin/list-order",
+      label:"List Order",
+      icon: myAssets.list,
+    },
+    {
       path:"/admin/list-user",
       label:"List User",
       icon: myAssets.list,

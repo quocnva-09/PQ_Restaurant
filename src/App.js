@@ -43,6 +43,7 @@ import UserAddress from './pages/UserAddress';
 import Address from './pages/Address';
 import ItemDetails from './pages/ItemDetails';
 import PaymentStatus from './components/PaymentStatus';
+import ViewOrder from './pages/admin/ViewOrder';
 
 const MainLayout = ({ children }) => {
   return (
@@ -95,6 +96,7 @@ function App() {
             }>
             <Route index element={<Dashboard />} />
               <Route path='my-profile' element={<MyProfile />} />
+              <Route path='list-order' element={<ViewOrder />} />
               <Route path='list-user' element={<ViewUser />} />
               <Route path='add-user' element={<AddUser />} />
               <Route path='edit-user/:userId' element={<EditUser />} />

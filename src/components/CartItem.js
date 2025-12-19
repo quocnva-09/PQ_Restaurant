@@ -14,7 +14,6 @@ const CartItem = ({cart, onSelectChange, isSelected}) => {
         const fetchProducts = async () => {
 
             try {
-                // Gọi API chỉ với Category và Keyword
                 const response = await ProductService.getProductById(cart.productId);
                 const productListResponse = response.result;
                 setProduct(productListResponse);
@@ -34,23 +33,20 @@ const CartItem = ({cart, onSelectChange, isSelected}) => {
 
       // Tăng số lượng
     const increment = () => {
-        // Gọi hàm updateQuantity trong Context (sẽ gọi CartService.updateItemQuantity)
         updateQuantity(cart.id, cart.quantity + 1);
     };
 
     // Giảm số lượng
     const decrement = () => {
         if (cart.quantity > 1) {
-            // Gọi hàm updateQuantity trong Context
             updateQuantity(cart.id, cart.quantity - 1);
         } else {
           handleRemove(cart.id);
         }
     };
 
-    // Xóa một mục khỏi giỏ hàng (Gọi API)
+    // Xóa một mục khỏi giỏ hàng
     const handleRemove = () => {
-        // Gọi hàm removeFromCart trong Context (sẽ gọi CartService.deleteItemFromCart)
       if (window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng không?")) {
           removeFromCart(cart.id);
       }

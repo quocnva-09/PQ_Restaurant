@@ -45,7 +45,7 @@ const AdminButton = () => {
                     disabled={loading}
                 >
                     {/* Avatar */}
-                    <div className="w-8 h-8 rounded-full text-black flex items-center justify-center font-semibold">
+                    <div className="w-8 h-8 rounded-full text-black flex items-center justify-center font-semibold overflow-hidden">
                         <img src={myAssets.admin} alt="Admin Avatar" className="w-8 h-8 rounded-full object-cover"/>
                     </div>
                     <h5 className='text-black'>{username || 'Admin'}</h5>
@@ -53,14 +53,15 @@ const AdminButton = () => {
 
                 {/* Dropdown Menu*/}
                 <div 
-                    className="absolute right-0 w-40 bg-white rounded-md shadow-lg 
-                                ring-1 ring-black ring-opacity-5 top-full -mt-1
-                                invisible opacity-0 
-                                group-hover:visible group-hover:opacity-100
-                                pointer-events-none group-hover:pointer-events-auto" 
+                    className="absolute top-full mt-0 w-40 bg-white rounded-lg shadow-xl 
+                    ring-1 ring-black ring-opacity-5
+                    invisible opacity-0 translate-y-2
+                    group-hover:visible group-hover:opacity-100 group-hover:translate-y-0
+                    transition-all duration-200 ease-out
+                    pointer-events-none group-hover:pointer-events-auto" 
                 >
-                    <div className="dropdown-arrow absolute"></div>
-                    <ul className="flex flex-col py-1">
+                    <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-3 h-3 bg-white rotate-45 border-l border-t border-black/5"></div>
+                    <ul className="relative flex flex-col py-1 bg-white rounded-md">
                         <li>
                             <button onClick={()=> navigate('/')} className="w-full text-center px-3 py-3 text-sm text-gray-700 hover:bg-gray-200">
                                 <h5>Front End</h5>

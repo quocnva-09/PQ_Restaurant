@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 
 const MyOrders = () => {
 
-  const {formatCurrency, isUser}=useUserContext();
+  const {formatCurrency}=useUserContext();
   const [orders, setOrders]=useState([]);
 
   const fetchMyOrders = useCallback(async () => {

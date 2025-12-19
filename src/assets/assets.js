@@ -140,9 +140,13 @@ import right from './right.svg'
 import dollar from './dollar.svg'
 import upload_icon from './upload_icon.png'
 import edit from './edit.png'
+import order_comfirm from './order_comfirm.png'
+import wait from './wait.gif'
 
 export const myAssets = {
-  upload_icon,
+    wait,
+    order_comfirm,
+    upload_icon,
     admin,
     mail,
     dollar,

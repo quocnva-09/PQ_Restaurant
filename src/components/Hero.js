@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Rating from './Rating'
-import ExploreMenu from './ExploreMenu'
+import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
 
-
+  const navigate=useNavigate();
+  
   return (
     <section className='max-padd-container'>
       <div className="lg:bg-[url('/src/assets/udon_bg.png')] bg-cover bg-center
@@ -29,7 +30,9 @@ const Hero = () => {
                         <span className='text-2x1'>000</span>
                     </span>
                 </div>
-                <button className='btn-solid !rounded-none p-5 w-52 text-lg font-bold mt-8 text-white'>Đặt Ngay</button>
+                <button 
+                onClick={() => navigate('/menu')}
+                className='btn-solid !rounded-none p-5 w-52 text-lg font-bold mt-8 text-white'>Đặt Ngay</button>
             </div>
             {/* Bottom */}
             <div className="pb-9">
