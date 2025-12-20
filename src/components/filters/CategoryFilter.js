@@ -1,39 +1,91 @@
 import React from 'react';
 
-const CategoryFilter = ({ categories, selectedCategoryId, onCategoryChange, loading }) => {
+const getChildCategories = (parent, allCategories) => {
+    if (!parent.subCategories || parent.subCategories.length === 0) return [];
+    // Lọc những thằng nào trong toàn bộ list có categoryCode nằm trong list subCategories của cha
+    return allCategories.filter(cat => parent.subCategories.includes(cat.categoryCode));
+};
+
+const CategoryFilter = ({ allCategories, selectedCategoryId, onCategoryChange, loading }) => {
     
-    // Thêm Category "Tất cả" vào đầu danh sách
-    const allCategories = [{ id: 0, name: 'Tất cả sản phẩm', categoryCode: 'ALL' }, ...categories];
+    const rootCategories = allCategories.filter(cat => cat.parentCategory === null);
     
     if (loading) {
         return <div className="text-gray-500">Đang tải danh mục...</div>;
     }
 
     return (
-        <div className="mb-4">
-            <h4 className="font-semibold mb-3 text-gray-700">Category</h4>
-            <div className="flex flex-col space-y-2">
-                {allCategories.map((category) => (
-                    <button
-                        key={category.id}
-                        onClick={() => onCategoryChange(category.id)}
-                        className={`text-left py-1 px-3 rounded-lg transition duration-150 
-                            ${selectedCategoryId === category.id 
-                                ? 'bg-red-500 text-white font-bold' 
-                                : 'text-gray-700 hover:bg-red-50'}`
-                        }
-                    >
-                        {category.name}
-                    </button>
-                ))}
-                {/* {categories.map((category) => (
-                <div key={category.id}>
-                    {category.name}
-                    {category.parentCategory && (
-                        <span className="text-xs text-blue-500"> (Thuộc: {category.parentCategory})</span>
-                    )}
-                </div>
-            ))} */}
+        <div className="w-full">
+            <h4 className="font-bold text-xl mb-4 text-gray-800 border-b pb-2">Category</h4>
+            <div className="flex flex-col gap-1 relative">
+                <button
+                    onClick={() => onCategoryChange(0)}
+                    className={`text-left px-4 py-3 rounded-lg transition-all duration-200 font-medium
+                    ${selectedCategoryId === 0 
+                        ? 'bg-red-500 text-white shadow-md' 
+                        : 'bg-transparent text-gray-600 hover:bg-gray-100'}`}
+                >
+                    Tất cả sản phẩm
+                </button>
+                {/* DANH SÁCH CHA */}
+                {rootCategories.map((parent) => {
+                    // Tìm con của thằng cha này
+                    const children = getChildCategories(parent, allCategories);
+                    const hasChildren = children.length > 0;
+                    const isChildSelected = children.some(child => child.id === selectedCategoryId);
+
+                    return (
+                        // Class 'group' để kích hoạt hover cho phần tử con
+                        <div key={parent.id} className="group relative">
+                            {hasChildren ? (
+                                // TRƯỜNG HỢP 1: CÓ CON -> Dùng thẻ DIV (Không bấm được), chỉ Hover
+                                <div className={`w-full flex justify-between items-center text-left py-2.5 px-4 rounded-lg font-bold cursor-default
+                                    ${isChildSelected ? 'text-red-600 bg-red-50' : 'text-gray-800 hover:bg-gray-100'}`}
+                                >
+                                    <span>{parent.name}</span>
+                                    {/* Mũi tên xoay khi hover */}
+                                    <span className="text-xs opacity-60 transition-transform duration-200 group-hover:rotate-90">▶</span>
+                                </div>
+                            ) : (
+                                // TRƯỜNG HỢP 2: KHÔNG CÓ CON (VD: SALAD) -> Dùng BUTTON (Phải bấm được)
+                                <button
+                                    onClick={() => onCategoryChange(parent.id)}
+                                    className={`w-full text-left py-2.5 px-4 rounded-lg transition-all duration-200 font-medium
+                                        ${selectedCategoryId === parent.id 
+                                            ? 'bg-red-500 text-white shadow-md' 
+                                            : 'text-gray-600 hover:bg-red-50 hover:text-red-500'}`
+                                    }
+                                >
+                                    {parent.name}
+                                </button>
+                            )}
+
+                            {/* --- MENU CON (DROPDOWN) --- */}
+                            {hasChildren && (
+                                <div className="hidden group-hover:block absolute top-full left-0 mt-0 w-full bg-white shadow-xl rounded-lg border border-gray-100 z-50 overflow-hidden">
+                                    <div className="py-2">
+                                        {children.map(child => (
+                                            <button
+                                                key={child.id}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    onCategoryChange(child.id);
+                                                }}
+                                                className={`block w-full text-left px-4 py-2 text-sm transition-colors
+                                                    ${selectedCategoryId === child.id 
+                                                        ? 'bg-red-50 text-red-600 font-bold' 
+                                                        : 'text-gray-600 hover:bg-tertiary hover:text-red-600'}`
+                                                }
+                                            >
+                                                {child.name}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );

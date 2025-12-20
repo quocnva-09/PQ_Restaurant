@@ -21,9 +21,9 @@ const Header = () => {
   return (
     <header className={`absolute top-0 left-0 right-0 z-50 py-3 ${!isHomePage && 'bg-white'}`}>
       {/* CONTAINER */}
-      <div className='mx-auto max-w-[1440px] px-4 lg:px-12 flex justify-between items-center'>
+      <div className='max-padd-container flexBetween'>
         {/* LOGO */}
-  <div className='flex flex-1'>
+        <div className='flex flex-1'>
           <Link to={'/'} className='flex items-end'>
             <img src={myAssets.logo} alt="logoImg" className='h-12'/>
             <div className='h-12'>

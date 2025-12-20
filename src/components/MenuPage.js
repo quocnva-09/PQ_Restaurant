@@ -4,6 +4,7 @@ import CategoryService from '../services/CategoryService';
 import CategoryFilter from '../components/filters/CategoryFilter';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { myAssets } from '../assets/assets';
  
 
 const MenuPage = () => {
@@ -11,6 +12,7 @@ const MenuPage = () => {
     // STATE CHỈ CÒN CATEGORY VÀ KEYWORD
     const [selectedCategoryId, setSelectedCategoryId] = useState(0); 
     const [searchKeyword, setSearchKeyword] = useState('');
+    const [sortType, setSortType] = useState('relative');
     
     const [categories, setCategories] = useState([]);
     const [loadingCategories, setLoadingCategories] = useState(true);
@@ -46,17 +48,45 @@ const MenuPage = () => {
             
             {/* LEFT SIDE: SIDEBAR LỌC */}
             <div className='md:w-1/4 bg-white md:m-3 p-5 rounded-xl shadow-lg'>
-                <h3 className='text-2xl font-bold mb-6 text-gray-800 border-b pb-3'>
+                <h3 className='text-2xl font-bold mb-6 text-gray-800 pb-1'>
                 Product Filter
                 </h3>
+                <div className='py-4'>
+                    <div className='text-center'>
+                        <div className='inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-primary ring-1
+                            ring-slate-900/20 w-full'>
+                            <input type="text" 
+                            value={searchKeyword} 
+                            onChange={(e)=>handleKeywordChange(e.target.value)}
+                            placeholder='Tìm kiếm....' className='border-none outline-none w-full text-sm bg-primary' />
+                            <div>
+                                <img src={myAssets.search} alt="" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="px-4 py-3 mt-2 bg-primary rounded-xl">
+                    <h5 className="mb-4 text-gray-700">Sort By Price</h5>
+                    <select 
+                        value={sortType}
+                        onChange={(e) => setSortType(e.target.value)}
+                        className="border border-slate-900/10 outline-none bg-white text-gray-30 text-sm font-medium h-8 w-full px-2 rounded-md text-gray-600"
+                    >
+                        <option value="relative">Liên quan nhất</option>
+                        <option value="low">Giá: Thấp đến Cao</option>
+                        <option value="high">Giá: Cao đến Thấp</option>
+                    </select>
+                </div>
                 
-                {/* Lọc theo Category */}
-                <CategoryFilter 
-                    categories={categories}
-                    selectedCategoryId={selectedCategoryId}
-                    onCategoryChange={handleCategoryChange}
-                    loading={loadingCategories}
-                />
+                <div className='pl-5 py-3 mt-4 bg-primary rounded-xl'>
+                    {/* Lọc theo Category */}
+                    <CategoryFilter 
+                        allCategories={categories}
+                        selectedCategoryId={selectedCategoryId}
+                        onCategoryChange={handleCategoryChange}
+                        loading={loadingCategories}
+                    />
+                </div>
 
                 
             </div>
@@ -67,20 +97,12 @@ const MenuPage = () => {
                 <h2 className='text-3xl font-extrabold mb-8 text-gray-800'>
                     <span className='text-red-600'>Menu</span>
                 </h2>
-                
-                {/* Thanh tìm kiếm */}
-                <input 
-                    type="text"
-                    placeholder="Find food by name..."
-                    value={searchKeyword}
-                    onChange={(e) => handleKeywordChange(e.target.value)}
-                    className="w-full p-3 mb-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 transition duration-150"
-                />
 
                 {/* Component Hiển thị Sản phẩm & Phân trang */}
                 <ProductListSection
                     selectedCategoryId={selectedCategoryId}
                     searchKeyword={searchKeyword}
+                    sortType={sortType}
                 />
 
             </div>

@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 
 const ITEMS_PER_PAGE = 8; 
 
-const ProductListSection = ({ selectedCategoryId, searchKeyword }) => { 
+const ProductListSection = ({ selectedCategoryId, searchKeyword, sortType }) => { 
     
     const [products, setProducts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -13,13 +13,10 @@ const ProductListSection = ({ selectedCategoryId, searchKeyword }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    // Reset trang khi bộ lọc thay đổi
     useEffect(() => {
-        // Bắt đầu từ trang 1 khi Category hoặc Keyword thay đổi
         setCurrentPage(1);
     }, [selectedCategoryId, searchKeyword]);
 
-    // Gọi API khi trang HOẶC bộ lọc thay đổi
     useEffect(() => {
         const fetchProducts = async () => {
             setLoading(true);
@@ -28,7 +25,6 @@ const ProductListSection = ({ selectedCategoryId, searchKeyword }) => {
             const pageIndex = currentPage - 1; 
 
             try {
-                // Gọi API chỉ với Category và Keyword
                 const response = await ProductService.getProducts(
                     searchKeyword || '',
                     selectedCategoryId || 0, 
@@ -43,9 +39,7 @@ const ProductListSection = ({ selectedCategoryId, searchKeyword }) => {
 
                 
             } catch (err) {
-                // console.error("Lỗi khi tải sản phẩm:", err);
                 toast.error("Không thể tải sản phẩm. Vui lòng thử lại.");
-                // setError("Không thể tải sản phẩm.");
                 setProducts([]);
                 setTotalPages(1);
             } finally {
@@ -56,6 +50,28 @@ const ProductListSection = ({ selectedCategoryId, searchKeyword }) => {
         fetchProducts();
     }, [currentPage, selectedCategoryId, searchKeyword]);
 
+    const getSortedProducts = () => {
+        const productsCopy = [...products];
+        const getPrice = (product) => {
+            if (product.prices && product.prices.length > 0) {
+                return product.prices[0].price; // Lấy giá của phần tử đầu tiên (index 0)
+            }
+            return 0; // Nếu không có giá thì coi là 0
+        };
+
+        switch (sortType) {
+            case 'low': // Giá: Thấp đến Cao
+                return productsCopy.sort((a, b) => getPrice(a) - getPrice(b));
+            
+            case 'high': // Giá: Cao đến Thấp
+                return productsCopy.sort((a, b) => getPrice(b) - getPrice(a));
+            
+            default: // Mặc định (Relevant)
+                return productsCopy;
+        }
+    };
+
+    const sortedProducts = getSortedProducts();
     
     if (loading) {
         return <div className='h-64 flex justify-center items-center text-lg text-gray-600'>Đang tải sản phẩm...</div>;
@@ -67,10 +83,13 @@ const ProductListSection = ({ selectedCategoryId, searchKeyword }) => {
     
     return (
         <div>
+            <div className="mb-4 text-gray-500 text-sm italic">
+                Hiển thị {sortedProducts.length} món ăn
+            </div>
             {/* DANH SÁCH SẢN PHẨM */}
             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10'>
-                {products.length > 0 ? (
-                    products.map((product) => (
+                {sortedProducts.length > 0 ? (
+                    sortedProducts.map((product) => (
                         <Items key={product.id} product={product} />
                     ))
                 ) : (
