@@ -108,7 +108,7 @@ const ProductList = ({searchKeyword}) => {
             {products.length > 0 ? 
             (
                 <div className='flex flex-col gap-2 lg:w-full'>
-                <div className='grid grid-cols-[1fr_2fr_2fr_1.5fr_1.5fr_1.5fr_2fr] items-center py-4 px-2 bg-solid text-white 
+                <div className='grid grid-cols-[1fr_1fr_2fr_1.75fr_1.5fr_1.5fr_2.5fr] items-center py-4 px-2 bg-solid text-white 
                 bold-14 sm:bold-15 mb-1 rounded-xl'>
                 <h5>STT</h5>
                 <h5>Image</h5>
@@ -121,7 +121,7 @@ const ProductList = ({searchKeyword}) => {
 
                 {/* Product List */}
                 {products.map((product, index)=>(
-                <div key={product.id} className='grid grid-cols-[1fr_2fr_2fr_1.5fr_1.5fr_1.5fr_2fr] items-center gap-2 p-2 bg-white rounded-lg' >
+                <div key={product.id} className='grid grid-cols-[1fr_1fr_2fr_1.75fr_1.5fr_1.5fr_2.5fr] items-center gap-2 p-2 bg-white rounded-lg' >
                     <p className='text-sm font-semibold'>{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</p>
                     <img src={myAssets[product.productImage]} alt="" className='w-12 bg-primary rounded'/>
                     <h5 className='text-sm font-semibold line-clamp-2'>{product.name}</h5>
@@ -141,7 +141,7 @@ const ProductList = ({searchKeyword}) => {
                         </div>
                         </h5>
                     </div>
-                    <div className='py-2.5'>
+                    <div className='py-2.5 flex items-center gap-2'>
                         <button 
                         onClick={()=>{navigate(`/admin/edit-product/${product.id}`)}} 
                         className='inline-flex items-center justify-center rounded-md font-medium transition duration-150 hover:bg-blue-200 text-white px-2 py-1 text-sm'>
@@ -152,7 +152,7 @@ const ProductList = ({searchKeyword}) => {
                         onClick={() => handleDeleteProduct(product.id)} 
                         className='inline-flex items-center justify-center rounded-md 
                         font-medium transition duration-150 hover:bg-red-200 text-white 
-                        px-2 py-1 text-sm ml-2'>
+                        px-2 py-1 text-sm'>
                         <img src={myAssets.trash} alt="" className='max-h-20 max-w-20 object-contain' />
                         </button>
                         

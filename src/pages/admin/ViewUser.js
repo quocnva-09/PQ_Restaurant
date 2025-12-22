@@ -128,7 +128,7 @@ function ViewUser() {
                             <h5 className={` font-bold ${user.role.name === 'ADMIN' ? 'text-red-600' : 'text-yellow-600'}`}>{user.role.name}</h5>
                             
                             {/* Hành động */}
-                            <div>
+                            <div className='py-2.5 flex items-center gap-2'>
                                 <button 
                                     onClick={() => navigate(`/admin/edit-user/${user.id}`)} 
                                     className='inline-flex items-center justify-center rounded-md font-medium transition duration-150 hover:bg-blue-200 text-white px-2 py-1 text-sm'
@@ -137,7 +137,7 @@ function ViewUser() {
                                 </button>
                                 <button 
                                     onClick={() => handleDeleteUser(user.id)} 
-                                    className='inline-flex items-center justify-center rounded-md font-medium transition duration-150 hover:bg-red-200 text-white px-2 py-1 text-sm ml-2'
+                                    className='inline-flex items-center justify-center rounded-md font-medium transition duration-150 hover:bg-red-200 text-white px-2 py-1 text-sm'
                                 >
                                     <img src={myAssets.trash} alt="" className='max-h-20 max-w-20 object-contain' />
                                 </button>

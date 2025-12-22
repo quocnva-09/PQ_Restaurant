@@ -104,7 +104,7 @@ function ViewPromotion() {
             </label>
           </div>
 
-          <div className='py-2.5'>
+          <div className='py-2.5 flex items-center gap-2'>
             <button onClick={() => navigate(`/admin/edit-promotion/${promotion.id}`)} 
             className='inline-flex items-center justify-center rounded-md font-medium transition duration-150 hover:bg-blue-200 text-white px-2 py-1 text-sm'
             >
@@ -113,7 +113,7 @@ function ViewPromotion() {
 
             <button 
             onClick={() => handleDeletePromotion(promotion.id)}
-            className='inline-flex items-center justify-center rounded-md font-medium transition duration-150 hover:bg-red-200 text-white px-2 py-1 text-sm ml-2'
+            className='inline-flex items-center justify-center rounded-md font-medium transition duration-150 hover:bg-red-200 text-white px-2 py-1 text-sm'
             >
               <img src={myAssets.trash} alt="" className='max-h-20 max-w-20 object-contain' />
               </button>

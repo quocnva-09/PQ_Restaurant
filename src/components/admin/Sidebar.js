@@ -44,13 +44,13 @@ function Sidebar() {
       icon: myAssets.list,
     },
     {
-      path:"/admin/list-banner",
-      label:"List Banner",
+      path:"/admin/list-coupon",
+      label:"List Coupon",
       icon: myAssets.list,
     },
     {
-      path:"/admin/list-about",
-      label:"List About",
+      path:"/admin/list-review",
+      label:"List Review",
       icon: myAssets.list,
     },
     {

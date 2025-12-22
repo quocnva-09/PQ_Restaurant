@@ -16,10 +16,10 @@ function ViewCategory() {
             
             const data = await CategoryService.getAllCategories();
             setCategories(data);
-            toast.success("Tải danh mục success!");
+            // toast.success("Tải danh mục success!");
         } catch (error) {
             console.error("Lỗi khi tải danh mục:", error);
-            toast.error("Không thể tải danh sách danh mục.");
+            // toast.error("Không thể tải danh sách danh mục.");
         } finally {
             setLoading(false);
         }
@@ -90,7 +90,7 @@ function ViewCategory() {
                                 </div>
                                 </h5>
                             </div>
-                            <div>
+                            <div className='flex items-center gap-2 py-2.5'>
                                 {/* Nút điều hướng đến trang Sửa */}
                                 <button 
                                     onClick={() => navigate(`/admin/edit-category/${cat.id}`)} 
@@ -104,7 +104,7 @@ function ViewCategory() {
                                     onClick={() => handleDelete(cat.id)} 
                                     className='inline-flex items-center justify-center rounded-md 
                                     font-medium transition duration-150 hover:bg-red-200 text-white 
-                                    px-2 py-1 text-sm ml-2'
+                                    px-2 py-1 text-sm'
                                 >
                                     <img src={myAssets.trash} alt="" className='max-h-20 max-w-20 object-contain' />
                                 </button>

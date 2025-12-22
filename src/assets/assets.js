@@ -142,8 +142,10 @@ import upload_icon from './upload_icon.png'
 import edit from './edit.png'
 import order_comfirm from './order_comfirm.png'
 import wait from './wait.gif'
+import details from './details.png'
 
 export const myAssets = {
+    details,
     wait,
     order_comfirm,
     upload_icon,
