@@ -66,7 +66,7 @@ function ViewCoupon() {
         </button>
         </div>
         <div className='flex flex-col gap-2 lg:w-full'>
-        <div className='grid grid-cols-[0.5fr_1.5fr_2fr_1.5fr_1fr_1.5fr] items-center py-4 px-2 bg-solid text-white 
+        <div className='grid grid-cols-[0.5fr_1.5fr_3fr_1.5fr_1fr_1.5fr] items-center py-4 px-2 bg-solid text-white 
         bold-14 sm:bold-15 mb-1 rounded-xl'>
             <h5>STT</h5>
             <h5>Code</h5>
@@ -78,7 +78,7 @@ function ViewCoupon() {
 
         {/* coupon List */}
         {coupons.map((coupon, index)=>(
-        <div key={coupon.id} className='grid grid-cols-[0.5fr_1.5fr_2fr_1.5fr_1fr_1.5fr] items-center gap-2 p-2 bg-white rounded-lg' >
+        <div key={coupon.id} className='grid grid-cols-[0.5fr_1.5fr_3fr_1.5fr_1fr_1.5fr] items-center gap-2 p-2 bg-white rounded-lg' >
             <p className='text-sm font-semibold'>{(currentPage - 1) * 5 + index + 1}</p>
             <h5 className='text-sm font-semibold line-clamp-2'>{coupon.code}</h5>
             <h5 className='text-sm font-semibold line-clamp-2'>{coupon.description}</h5>
@@ -110,11 +110,11 @@ function ViewCoupon() {
                 </button>
 
 
-                <button onClick={() => navigate(`/admin/edit-coupon/${coupon.id}`)} 
+                {/* <button onClick={() => navigate(`/admin/edit-coupon/${coupon.code}`)} 
                 className='inline-flex items-center justify-center rounded-md font-medium transition duration-150 hover:bg-blue-200 text-white px-2 py-1 text-sm'
                 >
                     <img src={myAssets.edit} alt="" className='max-h-20 max-w-20 object-contain' />
-                </button>
+                </button> */}
 
                 <button 
                 onClick={() => handleDelete(coupon.id)}

@@ -115,7 +115,7 @@ function ViewOrder() {
                 </span>
             </div>
             {/* All Orders */}
-            <div className='bg-primary pb-20'> 
+            <div className='bg-primary'> 
                 {currentOrders.length === 0 ? (
                     <div className="text-center py-10 text-gray-500">Chưa có đơn hàng nào.</div>
                 ) : (
@@ -202,17 +202,15 @@ function ViewOrder() {
                                             order.status === 'ACCEPTED' ? 'bg-blue-100 text-blue-800' :
                                             order.status === 'PAID' ? 'bg-green-100 text-green-800' :
                                             order.status === 'DENIED' ? 'bg-red-100 text-red-800' :
-                                            order.status === 'CANCELLED' ? 'bg-red-100 text-red-800' :
+                                            // order.status === 'CANCELLED' ? 'bg-red-100 text-red-800' :
                                             'bg-gray-100 text-gray-800'}`}
                                     >
                                         <option value="PENDING">PENDING</option>
                                         <option value="ACCEPTED">ACCEPTED</option>
-                                        <option value="SHIPPING">SHIPPING</option>
-                                        <option value="COMPLETED">COMPLETED</option>
                                         <option value="DENIED">DENIED</option>
                                         <option value="NOT_PAY">NOT_PAY</option>
                                         <option value="PAID">PAID</option>
-                                        <option value="CANCELLED">CANCELLED</option>
+                                        {/* <option value="CANCELLED">CANCELLED</option> */}
                                     </select>
                                 </div>
                             </div>
@@ -226,9 +224,9 @@ function ViewOrder() {
                         <button
                             onClick={() => paginate(currentPage - 1)}
                             disabled={currentPage === 1}
-                            className="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-semibold text-slate-600 transition"
+                            className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-semibold transition"
                         >
-                            Trước
+                            Previous
                         </button>
                         
                         <div className="flex gap-1 overflow-x-auto max-w-[200px] md:max-w-none custom-scrollbar pb-1 md:pb-0">
@@ -238,8 +236,8 @@ function ViewOrder() {
                                     onClick={() => paginate(number)}
                                     className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-bold transition-all shadow-sm
                                         ${currentPage === number 
-                                            ? 'bg-slate-800 text-white scale-110' 
-                                            : 'bg-white border border-gray-200 hover:bg-gray-50 text-gray-600'
+                                            ? 'bg-red-500 text-white border-red-500' 
+                                            : 'bg-white text-gray-700 hover:bg-gray-100 border-gray-300'
                                         }`}
                                 >
                                     {number}
@@ -250,9 +248,9 @@ function ViewOrder() {
                         <button
                             onClick={() => paginate(currentPage + 1)}
                             disabled={currentPage === totalPages}
-                            className="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-semibold text-slate-600 transition"
+                            className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-semibold transition"
                         >
-                            Sau
+                            Next
                         </button>
                     </div>
                 )}

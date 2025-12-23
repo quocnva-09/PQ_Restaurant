@@ -48,10 +48,11 @@ import Checkout from './pages/Checkout';
 import OAuth2RedirectHandler from './components/OAuth2RedirectHandler';
 import ViewCoupon from './pages/admin/ViewCoupon';
 import ViewReview from './pages/admin/ViewReview';
-import CouponDetail from './components/CouponDetail';
-import EditCoupon from './components/EditCoupon';
-import OrderDetail from './components/OrderDetail';
-import EditOrder from './components/EditOrder';
+import CouponDetail from './pages/admin/CouponDetail';
+import EditCoupon from './pages/admin/EditCoupon';
+import OrderDetail from './pages/admin/OrderDetail';
+import EditOrder from './pages/admin/EditOrder';
+import AddCoupon from './pages/admin/AddCoupon';
 
 const MainLayout = ({ children }) => {
   return (
@@ -121,8 +122,9 @@ function App() {
               <Route path='add-promotion' element={<AddPromotion />} />
               <Route path='edit-promotion/:promotionId' element={<EditPromotion />} />
               <Route path='list-coupon' element={<ViewCoupon />} />
+              <Route path='add-coupon' element={<AddCoupon />} />
               <Route path='coupon-detail/:couponCode' element={<CouponDetail />} />
-              <Route path='edit-coupon/:couponId' element={<EditCoupon />} />
+              <Route path='edit-coupon/:couponCode' element={<EditCoupon />} />
               <Route path='list-review' element={<ViewReview />} />
               <Route path='list-comment' element={<ViewProducts />} />
               <Route path='list-blog' element={<ViewProducts />} />

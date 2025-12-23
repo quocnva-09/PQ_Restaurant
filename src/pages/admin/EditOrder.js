@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useUserContext } from '../context/UserContext';
-import OrderService from '../services/OrderSevice';
-import { myAssets } from '../assets/assets';
+import { useUserContext } from '../../context/UserContext';
+import OrderService from '../../services/OrderSevice';
+import { myAssets } from '../../assets/assets';
 
 function EditOrder() {
     const { orderId } = useParams();

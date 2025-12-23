@@ -36,7 +36,7 @@ const CouponConditionService = {
     },
 
     // Xóa một điều kiện mã giảm giá
-    deleteCoupon: async (conditionId) => {
+    deleteCondition: async (conditionId) => {
         try {
             const response = await api.delete(`/conditions/${conditionId}`);
             return response.data; 
