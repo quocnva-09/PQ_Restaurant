@@ -9,7 +9,7 @@ function ViewCoupon() {
     const [coupons, setCoupons] = useState([]);
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    // const [totalPages, setTotalPages] = useState(2);
+    const [itemsPerPage] = useState(5);
 
     const fetchCoupons = async () => {
         setLoading(true);
@@ -30,11 +30,13 @@ function ViewCoupon() {
         fetchCoupons();
     },[]);
 
-    //     const handlePageChange = (newPage) => {
-    //     if (newPage >= 1 && newPage <= totalPages) {
-    //         fetchCoupons(newPage);
-    //     }
-    // };
+    // --- Logic Phân trang ---
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentCoupon = coupons.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(coupons.length / itemsPerPage);
+
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     const handleDelete = async (couponId) => {
         if (!window.confirm(`Bạn có chắc chắn muốn xóa coupon ID: ${couponId} không?`)) {
@@ -77,88 +79,102 @@ function ViewCoupon() {
         </div>
 
         {/* coupon List */}
-        {coupons.map((coupon, index)=>(
-        <div key={coupon.id} className='grid grid-cols-[0.5fr_1.5fr_3fr_1.5fr_1fr_1.5fr] items-center gap-2 p-2 bg-white rounded-lg' >
-            <p className='text-sm font-semibold'>{(currentPage - 1) * 5 + index + 1}</p>
-            <h5 className='text-sm font-semibold line-clamp-2'>{coupon.code}</h5>
-            <h5 className='text-sm font-semibold line-clamp-2'>{coupon.description}</h5>
-            <h5 className='text-sm font-semibold line-clamp-2'>{coupon.expiredAt}</h5>
+        {currentCoupon.length === 0 ? (
+            <p className='p-4 text-center'>Không có người coupon nào.</p>
+            ) : (
+            currentCoupon.map((coupon, index)=>(
+                <div key={coupon.id} className='grid grid-cols-[0.5fr_1.5fr_3fr_1.5fr_1fr_1.5fr] items-center gap-2 p-2 bg-white rounded-lg' >
+                    <p className='text-sm font-semibold'>{(currentPage - 1) * itemsPerPage + index + 1}</p>
+                    <h5 className='text-sm font-semibold line-clamp-2'>{coupon.code}</h5>
+                    <h5 className='text-sm font-semibold line-clamp-2'>{coupon.description}</h5>
+                    <h5 className='text-sm font-semibold line-clamp-2'>{coupon.expiredAt}</h5>
 
-            <div>
-                <label 
-                className='relative inline-flex items-center cursor-pointer text-gray-900 gap-3'>
-                    <input 
-                    type='checkbox' 
-                    className='sr-only peer' 
-                    defaultChecked={coupon.active}
-                    >
+                    <div>
+                        <label 
+                        className='relative inline-flex items-center cursor-pointer text-gray-900 gap-3'>
+                            <input 
+                            type='checkbox' 
+                            className='sr-only peer' 
+                            defaultChecked={coupon.active}
+                            >
 
-                    </input>
-                    <div 
-                    className='w-10 h-6 bg-slate-300 rounded-full peer peer-checked:bg-solid transition-colors duration-200'>
-                    <span 
-                    className='absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform duration-200 ease-in-out peer-checked:translate-x-4'></span>
+                            </input>
+                            <div 
+                            className='w-10 h-6 bg-slate-300 rounded-full peer peer-checked:bg-solid transition-colors duration-200'>
+                            <span 
+                            className='absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform duration-200 ease-in-out peer-checked:translate-x-4'></span>
+                            </div>
+                        </label>
                     </div>
-                </label>
-            </div>
 
-            <div className='py-2.5 flex items-center gap-2'>
-                <button onClick={() => navigate(`/admin/coupon-detail/${coupon.code}`)} 
-                className='inline-flex items-center justify-center rounded-md font-medium transition duration-150 hover:bg-green-200 text-white px-2 py-1 text-sm'
-                >
-                    <img src={myAssets.details} alt="" className='max-h-20 max-w-20 object-contain' />
-                </button>
-
-
-                {/* <button onClick={() => navigate(`/admin/edit-coupon/${coupon.code}`)} 
-                className='inline-flex items-center justify-center rounded-md font-medium transition duration-150 hover:bg-blue-200 text-white px-2 py-1 text-sm'
-                >
-                    <img src={myAssets.edit} alt="" className='max-h-20 max-w-20 object-contain' />
-                </button> */}
-
-                <button 
-                onClick={() => handleDelete(coupon.id)}
-                className='inline-flex items-center justify-center rounded-md font-medium transition duration-150 hover:bg-red-200 text-white px-2 py-1 text-sm'
-                >
-                    <img src={myAssets.trash} alt="" className='max-h-20 max-w-20 object-contain' />
-                </button>
-            </div>
-        </div>
-        ))}
-
-        {/* Phân Trang
-        {totalPages > 1 && (
-                <div className='flex justify-center items-center flex-wrap mt-14 mb-10 gap-3'>
-                    <button 
-                        disabled={currentPage === 1} 
-                        onClick={() => handlePageChange(currentPage - 1)} 
-                        className={`px-3 py-1 border rounded-lg transition-all text-sm font-semibold 
-                        ${currentPage === 1 ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-red-500 text-white hover:bg-red-600"}`}
-                    >
-                        Previous
-                    </button>
-                    
-                    {Array.from({ length: totalPages }, (_, index) => (
-                        <button 
-                            key={index + 1} 
-                            onClick={() => handlePageChange(index + 1)}
-                            className={`px-3 py-1 border rounded-lg text-sm font-semibold transition-all
-                            ${currentPage === index + 1 ? "bg-red-500 text-white border-red-500" : "bg-white text-gray-700 hover:bg-gray-100 border-gray-300"}`}
+                    <div className='py-2.5 flex items-center gap-2'>
+                        <button onClick={() => navigate(`/admin/coupon-detail/${coupon.code}`)} 
+                        className='inline-flex items-center justify-center rounded-md font-medium transition duration-150 hover:bg-green-200 text-white px-2 py-1 text-sm'
                         >
-                            {index + 1}
+                            <img src={myAssets.details} alt="" className='max-h-20 max-w-20 object-contain' />
                         </button>
-                    ))}
-                    
-                    <button 
-                        disabled={currentPage === totalPages} 
-                        onClick={() => handlePageChange(currentPage + 1)} 
-                        className={`px-3 py-1 border rounded-lg transition-all text-sm font-semibold 
-                        ${currentPage === totalPages ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-red-500 text-white hover:bg-red-600"}`}
-                    >
-                        Next
-                    </button>
+
+
+                        {/* <button onClick={() => navigate(`/admin/edit-coupon/${coupon.code}`)} 
+                        className='inline-flex items-center justify-center rounded-md font-medium transition duration-150 hover:bg-blue-200 text-white px-2 py-1 text-sm'
+                        >
+                            <img src={myAssets.edit} alt="" className='max-h-20 max-w-20 object-contain' />
+                        </button> */}
+
+                        <button 
+                        onClick={() => handleDelete(coupon.id)}
+                        className='inline-flex items-center justify-center rounded-md font-medium transition duration-150 hover:bg-red-200 text-white px-2 py-1 text-sm'
+                        >
+                            <img src={myAssets.trash} alt="" className='max-h-20 max-w-20 object-contain' />
+                        </button>
+                    </div>
                 </div>
-            )} */}
+            ))
+        )}
+
+        {/* Phân Trang */}
+        {coupons.length > itemsPerPage && (
+            <div className="flex justify-end mt-4 gap-2">
+                <button
+                    onClick={() => paginate(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className={`px-4 py-2 rounded-lg border text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all ${
+                        currentPage === 1 
+                        ? "bg-gray-100 text-gray-400 cursor-not-allowed" 
+                        : "bg-white text-gray-700 hover:bg-blue-100 border-gray-300"
+                    }`}
+                >
+                    &laquo; Trước
+                </button>
+                
+                {/* Chỉ hiện tối đa 5 trang để tránh dài quá nếu data nhiều */}
+                {[...Array(Math.min(totalPages, 5))].map((_, i) => (
+                    <button
+                        key={i + 1}
+                        onClick={() => paginate(i + 1)}
+                        className={`px-4 py-2 rounded border text-sm transition-all ${
+                            currentPage === i + 1
+                            ? "bg-blue-600 text-white border-blue-600"
+                            : "bg-white text-gray-700 hover:bg-blue-100 border-gray-300"
+                        }`}
+                    >
+                        {i + 1}
+                    </button>
+                ))}
+
+                <button
+                    onClick={() => paginate(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className={`px-4 py-2 rounded border text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all ${
+                        currentPage === totalPages 
+                        ? "bg-gray-100 text-gray-400 cursor-not-allowed" 
+                        : "bg-white text-gray-700 hover:bg-blue-100 border-gray-300"
+                    }`}
+                >
+                    Sau &raquo;
+                </button>
+            </div>
+        )}
         </div>
     </div>
   )

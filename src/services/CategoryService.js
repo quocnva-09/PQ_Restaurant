@@ -14,13 +14,20 @@ const CategoryService = {
         }
     },
 
-    getAllCategories: async () => {
+    getAllCategories: async (keyword = "", parentCategoryId = 0) => {
         try {
-            const response = await api.get("/categories");
-            
-            const categories = response.data.map(apiResponse => apiResponse.result);
-            
-            return categories; 
+            const response = await api.get("/categories", {
+                params: {
+                    keyword: keyword,
+                    parent_category_id: parentCategoryId
+                }
+            });
+
+            if (Array.isArray(response.data)) {
+                return response.data.map(item => item.result);
+            }
+
+            return [];
         } catch (error) {
             console.error("Error fetching all categories:", error);
             throw error;

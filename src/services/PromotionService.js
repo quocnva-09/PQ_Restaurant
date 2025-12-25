@@ -2,7 +2,7 @@ import api from "../api/api";
 
 const PromotionService = {
 
-    getAllPromotions: async (page = 0, limit = 5) => {
+    getAllPromotions: async (page = 0, limit = 1000) => {
         try {
             const response = await api.get(`/promotions?page=${page}&limit=${limit}`);
             return response.data; 

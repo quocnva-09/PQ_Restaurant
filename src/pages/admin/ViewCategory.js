@@ -9,6 +9,7 @@ function ViewCategory() {
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(5);
     
     const fetchCategories = async () => {
         setLoading(true);
@@ -44,6 +45,14 @@ function ViewCategory() {
             toast.error('Lỗi xóa danh mục. Có thể danh mục này đang được sử dụng.');
         }
     };
+        
+    // --- Logic Phân trang ---
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentCategories = categories.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(categories.length / itemsPerPage);
+
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
 
     if (loading) return <div className='p-6'>Đang tải danh sách danh mục...</div>;
@@ -73,15 +82,15 @@ function ViewCategory() {
                     <h5>Action</h5>
                 </div>
 
-                {categories.length === 0 ? (
+                {currentCategories.length === 0 ? (
                     <p className='p-4 text-center'>Không có danh mục nào được tìm thấy.</p>
                 ) : (
-                    categories.map((cat, index) => (
+                    currentCategories.map((cat, index) => (
                         <div key={cat.id} className='grid grid-cols-[1fr_1.5fr_1.5fr_1.5fr_1fr_1.5fr] items-center gap-2 p-2 bg-white rounded-lg' >
-                            <p className='text-sm font-semibold'>{(currentPage - 1) * 10 + index + 1}</p>
-                            <h5 className='text-sm font-semibold line-clamp-2'>{cat.name}</h5>
-                            <p className='text-sm font-semibold'>{cat.categoryCode}</p>
-                            <p className='text-sm font-semibold'>{cat.parentCategory || 'Không'}</p>
+                            <h5 className='font-semibold'>{(currentPage - 1) * itemsPerPage + index + 1}</h5>
+                            <h5 className='font-semibold line-clamp-2'>{cat.name}</h5>
+                            <p className='font-semibold'>{cat.categoryCode}</p>
+                            <p className='font-semibold'>{cat.parentCategory || 'Không'}</p>
                             <div>
                                 <h5 className='relative inline-flex items-center cursor-pointer text-gray-900 gap-3'>
                                 <input type='checkbox' className='sr-only peer' defaultChecked={cat.active}></input>
@@ -115,6 +124,48 @@ function ViewCategory() {
 
                 
             </div>
+            {categories.length > itemsPerPage && (
+                <div className="flex justify-end mt-4 gap-2">
+                    <button
+                        onClick={() => paginate(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className={`px-4 py-2 rounded-lg border text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all ${
+                            currentPage === 1 
+                            ? "bg-gray-100 text-gray-400 cursor-not-allowed" 
+                            : "bg-white text-gray-700 hover:bg-blue-100 border-gray-300"
+                        }`}
+                    >
+                        &laquo; Trước
+                    </button>
+                    
+                    {/* Chỉ hiện tối đa 5 trang để tránh dài quá nếu data nhiều */}
+                    {[...Array(Math.min(totalPages, 5))].map((_, i) => (
+                        <button
+                            key={i + 1}
+                            onClick={() => paginate(i + 1)}
+                            className={`px-4 py-2 rounded border text-sm transition-all ${
+                                currentPage === i + 1
+                                ? "bg-blue-600 text-white border-blue-600"
+                                : "bg-white text-gray-700 hover:bg-blue-100 border-gray-300"
+                            }`}
+                        >
+                            {i + 1}
+                        </button>
+                    ))}
+
+                    <button
+                        onClick={() => paginate(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className={`px-4 py-2 rounded border text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all ${
+                            currentPage === totalPages 
+                            ? "bg-gray-100 text-gray-400 cursor-not-allowed" 
+                            : "bg-white text-gray-700 hover:bg-blue-100 border-gray-300"
+                        }`}
+                    >
+                        Sau &raquo;
+                    </button>
+                </div>
+            )}
         </div>
     );
 }

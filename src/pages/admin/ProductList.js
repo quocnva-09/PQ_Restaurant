@@ -162,22 +162,28 @@ const ProductList = ({searchKeyword}) => {
 
                     {/* Phân Trang */}
                     {totalPages > 1 && (
-                        <div className='flex justify-center items-center flex-wrap mt-14 mb-10 gap-3'>
+                        <div className='flex justify-end mt-4 gap-2'>
                             <button 
                                 disabled={currentPage === 1} 
                                 onClick={() => setCurrentPage(prev => prev - 1)} 
-                                className={`px-3 py-1 border rounded-lg transition-all text-sm font-semibold 
-                                ${currentPage === 1 ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-red-500 text-white hover:bg-red-600"}`}
+                                className={`px-4 py-2 rounded-lg border text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all 
+                                    ${currentPage === 1 
+                                    ? "bg-gray-100 text-gray-400 cursor-not-allowed" 
+                                    : "bg-white text-gray-700 hover:bg-blue-100 border-gray-300"
+                                }`}
                             >
-                                Previous
+                                &laquo; Trước
                             </button>
                             
                             {Array.from({ length: totalPages }, (_, index) => (
                                 <button 
                                     key={index + 1} 
                                     onClick={() => setCurrentPage(index + 1)}
-                                    className={`px-3 py-1 border rounded-lg text-sm font-semibold transition-all
-                                    ${currentPage === index + 1 ? "bg-red-500 text-white border-red-500" : "bg-white text-gray-700 hover:bg-gray-100 border-gray-300"}`}
+                                    className={`px-4 py-2 border rounded text-sm font-semibold transition-all
+                                        ${currentPage === index + 1
+                                        ? "bg-blue-600 text-white border-blue-600"
+                                        : "bg-white text-gray-700 hover:bg-blue-100 border-gray-300"
+                                    }`}
                                 >
                                     {index + 1}
                                 </button>
@@ -186,10 +192,13 @@ const ProductList = ({searchKeyword}) => {
                             <button 
                                 disabled={currentPage === totalPages} 
                                 onClick={() => setCurrentPage(prev => prev + 1)} 
-                                className={`px-3 py-1 border rounded-lg transition-all text-sm font-semibold 
-                                ${currentPage === totalPages ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-red-500 text-white hover:bg-red-600"}`}
+                                className={`px-4 py-2 rounded-lg border text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all
+                                    ${currentPage === totalPages 
+                                    ? "bg-gray-100 text-gray-400 cursor-not-allowed" 
+                                    : "bg-white text-gray-700 hover:bg-blue-100 border-gray-300"
+                                }`}
                             >
-                                Next
+                                Sau &raquo;
                             </button>
                         </div>
                     )}

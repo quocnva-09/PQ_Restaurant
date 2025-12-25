@@ -115,7 +115,7 @@ function ViewOrder() {
                 </span>
             </div>
             {/* All Orders */}
-            <div className='bg-primary'> 
+            <div className='bg-slate-50'> 
                 {currentOrders.length === 0 ? (
                     <div className="text-center py-10 text-gray-500">Chưa có đơn hàng nào.</div>
                 ) : (
@@ -138,11 +138,11 @@ function ViewOrder() {
                                                 </div>
                                                 <div className='block w-full'>
                                                     <h5 className='uppercase line-clamp-1 text-xs font-bold text-slate-800'>{item.product?.name}</h5>
-                                                    <div className='flex flex-wrap gap-2 text-[11px] mt-1 text-gray-500'>
+                                                    {/* <div className='flex flex-wrap gap-2 text-[11px] mt-1 text-gray-500'>
                                                         <span className='bg-gray-100 px-1.5 rounded'>Sz: {item.size}</span>
                                                         <span className='bg-gray-100 px-1.5 rounded'>x{item.numProducts}</span>
                                                         <span className='font-bold text-slate-700'>{formatCurrency(item.price)}</span>
-                                                    </div>
+                                                    </div> */}
                                                 </div>
                                             </div>
                                         </div>
@@ -220,37 +220,44 @@ function ViewOrder() {
                 
                 {/* --- 4. THANH PHÂN TRANG (PAGINATION BAR) --- */}
                 {orders.length > itemsPerPage && (
-                    <div className="mt-6 flex justify-center items-center gap-2 pb-6 pt-4 border-t border-slate-200">
+                    <div className="flex justify-end mt-4 gap-2">
                         <button
                             onClick={() => paginate(currentPage - 1)}
                             disabled={currentPage === 1}
-                            className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-semibold transition"
+                            className={`px-4 py-2 rounded-lg border text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all ${
+                                currentPage === 1 
+                                ? "bg-gray-100 text-gray-400 cursor-not-allowed" 
+                                : "bg-white text-gray-700 hover:bg-blue-100 border-gray-300"
+                            }`}
                         >
-                            Previous
+                            &laquo; Trước
                         </button>
                         
-                        <div className="flex gap-1 overflow-x-auto max-w-[200px] md:max-w-none custom-scrollbar pb-1 md:pb-0">
-                            {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
-                                <button
-                                    key={number}
-                                    onClick={() => paginate(number)}
-                                    className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-bold transition-all shadow-sm
-                                        ${currentPage === number 
-                                            ? 'bg-red-500 text-white border-red-500' 
-                                            : 'bg-white text-gray-700 hover:bg-gray-100 border-gray-300'
-                                        }`}
-                                >
-                                    {number}
-                                </button>
-                            ))}
-                        </div>
+                        {/* Chỉ hiện tối đa 5 trang để tránh dài quá nếu data nhiều */}
+                        {[...Array(Math.min(totalPages, 5))].map((_, i) => (
+                            <button
+                                key={i + 1}
+                                onClick={() => paginate(i + 1)}
+                                className={`px-4 py-2 rounded border text-sm transition-all ${
+                                    currentPage === i + 1
+                                    ? "bg-blue-600 text-white border-blue-600"
+                                    : "bg-white text-gray-700 hover:bg-blue-100 border-gray-300"
+                                }`}
+                            >
+                                {i + 1}
+                            </button>
+                        ))}
 
                         <button
                             onClick={() => paginate(currentPage + 1)}
                             disabled={currentPage === totalPages}
-                            className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-semibold transition"
+                            className={`px-4 py-2 rounded border text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all ${
+                                currentPage === totalPages 
+                                ? "bg-gray-100 text-gray-400 cursor-not-allowed" 
+                                : "bg-white text-gray-700 hover:bg-blue-100 border-gray-300"
+                            }`}
                         >
-                            Next
+                            Sau &raquo;
                         </button>
                     </div>
                 )}

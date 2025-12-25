@@ -33,10 +33,10 @@ const ProductReviews = ({ productId }) => {
 
     const loadReviews = async () => {
         try {
-            // const data = await ReviewService.getReviewsByProductId(productId);
-            // setReviews(data.map(item => item.result));
-            // Tạm thời comment vì backend bạn chưa có API getByProductId
-            setReviews([]); 
+            const response = await ReviewService.getReviewsByProductId(productId);
+
+            const acceptedReviews = response.filter(review => review.reviewStatus === "ACCEPTED");
+            setReviews(acceptedReviews); 
         } catch (error) {
             console.error(error);
         }
@@ -141,8 +141,7 @@ const ProductReviews = ({ productId }) => {
                 {reviews.length > 0 ? reviews.map((rev, index) => (
                     <div key={index} className="border-b pb-4 last:border-0">
                         <div className="flex items-center gap-2 mb-1">
-                            <span className="font-bold text-gray-800">{rev.username || "User"}</span>
-                            <span className="text-xs text-gray-400">| {new Date(rev.createdAt).toLocaleDateString()}</span>
+                            <span className="font-bold text-gray-800">{rev.user.username || "User"}</span>
                         </div>
                         <div className="flex text-sm mb-2">{renderStars(rev.rating)}</div>
                         <p className="text-gray-600">{rev.comment}</p>

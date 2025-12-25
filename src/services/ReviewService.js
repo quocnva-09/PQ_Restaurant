@@ -12,9 +12,31 @@ const ReviewService = {
 
     getAllReviews: async () => {
         try {
-            const response = await api.get('/reviews');
-            return response.data.result;
+
+            const response = await api.get(`/reviews`);
+            
+            if (Array.isArray(response.data)) {
+                return response.data.map(item => item.result);
+            }
+            
+            return [];
         } catch (error) {
+            console.error("Error fetching all reviews:", error);
+            throw error;
+        }
+    },
+
+    getReviewsByProductId: async (productId) => {
+        try {
+            const response = await api.get(`/reviews/by-product/${productId}`);
+            
+            if (Array.isArray(response.data)) {
+                return response.data.map(item => item.result);
+            }
+            
+            return [];
+        } catch (error) {
+            console.error("Error fetching product reviews:", error);
             throw error;
         }
     },
@@ -22,7 +44,10 @@ const ReviewService = {
     getMyReviews: async () => {
         try {
             const response = await api.get('/reviews/by-current-user');
-            return response.data.result;
+            if (Array.isArray(response.data)) {
+                return response.data.map(item => item.result);
+            }
+            return [];
         } catch (error) {
             throw error;
         }
@@ -63,6 +88,7 @@ const ReviewService = {
             throw error;
         }
     }
+
 };
 
 export default ReviewService;

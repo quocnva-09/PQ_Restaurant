@@ -9,6 +9,8 @@ function ViewUser() {
     const navigate = useNavigate();
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(5);
 
     const fetchUsers = async () => {
         setLoading(true);
@@ -40,6 +42,14 @@ function ViewUser() {
     useEffect(() => {
         fetchUsers();
     }, []);
+
+    // --- Logic Phân trang ---
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentUser = users.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(users.length / itemsPerPage);
+
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     // --- Xử lý Xóa User ---
     const handleDeleteUser = async (userId) => {
@@ -103,12 +113,12 @@ function ViewUser() {
                     <h5>Action</h5>
                 </div>
 
-                {users.length === 0 ? (
+                {currentUser.length === 0 ? (
                     <p className='p-4 text-center'>Không có người dùng nào.</p>
                 ) : (
-                    users.map((user, index) => (
+                    currentUser.map((user, index) => (
                         <div key={user.id} className='grid grid-cols-[0.5fr_1.5fr_1fr_2fr_1.5fr_1fr_1fr_1.5fr] items-center gap-2 p-2 bg-white rounded-lg' >
-                            <h5 className='font-semibold'>{index + 1}</h5>
+                            <h5 className='font-semibold'>{(currentPage - 1) * itemsPerPage + index + 1}</h5>
 
                             <h5 className=' font-semibold line-clamp-2'>{user.fullName}</h5>
                             
@@ -116,13 +126,13 @@ function ViewUser() {
                             <h5 className='font-bold'>{user.username}</h5>
 
                             {/* Email */}
-                            <h5 className='font-bold'>{user.email}</h5>
+                            <p className='font-bold'>{user.email}</p>
 
                             {/* Date of birth */}
-                            <h5 className='font-semibold'>{formatDate(user.dob)}</h5>
+                            <p className='font-semibold'>{formatDate(user.dob)}</p>
                             
                             {/* Giới tính */}
-                            <h5 className='font-bold'>{mapGenderToDescription(user.gender)}</h5>
+                            <p className='font-bold'>{mapGenderToDescription(user.gender)}</p>
 
                             {/* Vai trò */}
                             <h5 className={` font-bold ${user.role.name === 'ADMIN' ? 'text-red-600' : 'text-yellow-600'}`}>{user.role.name}</h5>
@@ -146,6 +156,48 @@ function ViewUser() {
                     ))
                 )}
             </div>
+            {users.length > itemsPerPage && (
+                <div className="flex justify-end mt-4 gap-2">
+                    <button
+                        onClick={() => paginate(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className={`px-4 py-2 rounded-lg border text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all ${
+                            currentPage === 1 
+                            ? "bg-gray-100 text-gray-400 cursor-not-allowed" 
+                            : "bg-white text-gray-700 hover:bg-blue-100 border-gray-300"
+                        }`}
+                    >
+                        &laquo; Trước
+                    </button>
+                    
+                    {/* Chỉ hiện tối đa 5 trang để tránh dài quá nếu data nhiều */}
+                    {[...Array(Math.min(totalPages, 5))].map((_, i) => (
+                        <button
+                            key={i + 1}
+                            onClick={() => paginate(i + 1)}
+                            className={`px-4 py-2 rounded border text-sm transition-all ${
+                                currentPage === i + 1
+                                ? "bg-blue-600 text-white border-blue-600"
+                                : "bg-white text-gray-700 hover:bg-blue-100 border-gray-300"
+                            }`}
+                        >
+                            {i + 1}
+                        </button>
+                    ))}
+
+                    <button
+                        onClick={() => paginate(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className={`px-4 py-2 rounded border text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all ${
+                            currentPage === totalPages 
+                            ? "bg-gray-100 text-gray-400 cursor-not-allowed" 
+                            : "bg-white text-gray-700 hover:bg-blue-100 border-gray-300"
+                        }`}
+                    >
+                        Sau &raquo;
+                    </button>
+                </div>
+            )}
         </div>
     );
 }

@@ -13,40 +13,34 @@ function ViewPromotion() {
   const [promotion, setPromotion] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
   const [hasNextPage, setHasNextPage] = useState(true);
 
-  const fetchPromotion = async (page=1) => {
-        setLoading(true);
-        try {
-            const response = await PromotionService.getAllPromotions(page-1, FETCH_LIMIT);
+  const fetchPromotion = async () => {
+    setLoading(true);
+    try {
+          const response = await PromotionService.getAllPromotions();
 
-            if (response.result.length > DISPLAY_LIMIT) {
-                // Trường hợp 1: Lấy về được 6 món
-                // -> Có trang tiếp theo
-                setHasNextPage(true);
-                
-                // Cắt bỏ phần tử thứ 6, chỉ giữ lại 5 phần tử để hiển thị
-                setPromotion(response.result.slice(0, DISPLAY_LIMIT));
-            } else {
-                // Trường hợp 2: Lấy về <= 5 món
-                // -> Hết trang tiếp theo rồi
-                setHasNextPage(false);
-                setPromotion(response.result);
-            }
-
-            setCurrentPage(page);
-        } catch (error) {
-            // console.error("Lỗi khi tải sản phẩm:", error);
-            toast.error("Không thể tải danh sách promotion.");
-        } finally {
-            setLoading(false);
-        }
-    };
+          setPromotion(response.result);
+    } catch (error) {
+        console.error("Lỗi khi tải sản phẩm:", error);
+        // toast.error("Không thể tải danh sách promotion.");
+    } finally {
+        setLoading(false);
+    }
+  };
 
     // Tải dữ liệu khi component mount lần đầu
     useEffect(() => {
-        fetchPromotion(1);
+        fetchPromotion();
     }, []);
+
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentPromotions = promotion.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(promotion.length / itemsPerPage);
+
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
     
     // Tải lại dữ liệu khi chuyển trang
     const handlePageChange = (newPage) => {
@@ -92,69 +86,95 @@ function ViewPromotion() {
         </div>
 
         {/* Promotion List */}
-        {promotion.map((promotion, index)=>(
-        <div key={promotion.id} className='grid grid-cols-[1fr_1.5fr_1.5fr_1fr_1fr] items-center gap-2 p-2 bg-white rounded-lg' >
-          <p className='text-sm font-semibold'>{(currentPage - 1) * 5 + index + 1}</p>
-          <img src={myAssets[promotion.img]} alt="" className='w-12 bg-primary rounded'/>
-          <h5 className='text-sm font-semibold line-clamp-2'>{promotion.title}</h5>
+        {currentPromotions.length === 0 ? (
+          <p className='p-4 text-center'>Không có khuyến mãi nào.</p>
+        ) : (
+          
+          currentPromotions.map((promotion, index)=>(
+            <div key={promotion.id} className='grid grid-cols-[1fr_1.5fr_1.5fr_1fr_1fr] items-center gap-2 p-2 bg-white rounded-lg' >
+            <p className='text-sm font-semibold'>{(currentPage - 1) * 5 + index + 1}</p>
+            <img src={myAssets[promotion.img]} alt="" className='w-12 bg-primary rounded'/>
+            <h5 className='text-sm font-semibold line-clamp-2'>{promotion.title}</h5>
 
-          <div>
-            <label 
-            className='relative inline-flex items-center cursor-pointer text-gray-900 gap-3'>
-              <input 
-              type='checkbox' 
-              className='sr-only peer' 
-              defaultChecked={promotion.inStock}
+            <div>
+              <label 
+              className='relative inline-flex items-center cursor-pointer text-gray-900 gap-3'>
+                <input 
+                type='checkbox' 
+                className='sr-only peer' 
+                defaultChecked={promotion.inStock}
+                >
+
+                </input>
+                <div 
+                className='w-10 h-6 bg-slate-300 rounded-full peer peer-checked:bg-solid transition-colors duration-200'>
+                  <span 
+                  className='absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform duration-200 ease-in-out peer-checked:translate-x-4'></span>
+                </div>
+              </label>
+            </div>
+
+            <div className='py-2.5 flex items-center gap-2'>
+              <button onClick={() => navigate(`/admin/edit-promotion/${promotion.id}`)} 
+              className='inline-flex items-center justify-center rounded-md font-medium transition duration-150 hover:bg-blue-200 text-white px-2 py-1 text-sm'
               >
-
-              </input>
-              <div 
-              className='w-10 h-6 bg-slate-300 rounded-full peer peer-checked:bg-solid transition-colors duration-200'>
-                <span 
-                className='absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform duration-200 ease-in-out peer-checked:translate-x-4'></span>
-              </div>
-            </label>
-          </div>
-
-          <div className='py-2.5 flex items-center gap-2'>
-            <button onClick={() => navigate(`/admin/edit-promotion/${promotion.id}`)} 
-            className='inline-flex items-center justify-center rounded-md font-medium transition duration-150 hover:bg-blue-200 text-white px-2 py-1 text-sm'
-            >
-              <img src={myAssets.edit} alt="" className='max-h-20 max-w-20 object-contain' />
-            </button>
-
-            <button 
-            onClick={() => handleDeletePromotion(promotion.id)}
-            className='inline-flex items-center justify-center rounded-md font-medium transition duration-150 hover:bg-red-200 text-white px-2 py-1 text-sm'
-            >
-              <img src={myAssets.trash} alt="" className='max-h-20 max-w-20 object-contain' />
+                <img src={myAssets.edit} alt="" className='max-h-20 max-w-20 object-contain' />
               </button>
+
+              <button 
+              onClick={() => handleDeletePromotion(promotion.id)}
+              className='inline-flex items-center justify-center rounded-md font-medium transition duration-150 hover:bg-red-200 text-white px-2 py-1 text-sm'
+              >
+                <img src={myAssets.trash} alt="" className='max-h-20 max-w-20 object-contain' />
+                </button>
+            </div>
           </div>
-        </div>
-        ))}
+          ))
+        )}
 
         {/* Phân Trang */}
-                <div className='flex justify-center items-center flex-wrap mt-14 mb-10 gap-3'>
-                    <button 
-                        disabled={currentPage === 1} 
-                        onClick={() => handlePageChange(currentPage - 1)} 
-                        className={`px-3 py-1 border rounded-lg transition-all text-sm font-semibold 
-                        ${currentPage === 1 ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-red-500 text-white hover:bg-red-600"}`}
-                    >
-                        Previous
-                    </button>
+        {promotion.length > itemsPerPage && (
+          <div className="flex justify-end mt-4 gap-2">
+              <button
+                  onClick={() => paginate(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className={`px-4 py-2 rounded-lg border text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all ${
+                      currentPage === 1 
+                      ? "bg-gray-100 text-gray-400 cursor-not-allowed" 
+                      : "bg-white text-gray-700 hover:bg-blue-100 border-gray-300"
+                  }`}
+              >
+                  &laquo; Trước
+              </button>
+              
+              {/* Chỉ hiện tối đa 5 trang để tránh dài quá nếu data nhiều */}
+              {[...Array(Math.min(totalPages, 5))].map((_, i) => (
+                  <button
+                      key={i + 1}
+                      onClick={() => paginate(i + 1)}
+                      className={`px-4 py-2 rounded border text-sm transition-all ${
+                          currentPage === i + 1
+                          ? "bg-blue-600 text-white border-blue-600"
+                          : "bg-white text-gray-700 hover:bg-blue-100 border-gray-300"
+                      }`}
+                  >
+                      {i + 1}
+                  </button>
+              ))}
 
-                    {/* <span className='text-gray-700 px-3 py-1 border rounded-lg text-sm font-semibold transition-all'>{currentPage}</span> */}
-                    
-                    <button 
-                        disabled={!hasNextPage} 
-                        onClick={() => handlePageChange(currentPage + 1)} 
-                        className={`px-3 py-1 border rounded-lg transition-all text-sm font-semibold 
-                        ${!hasNextPage ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-red-500 text-white hover:bg-red-600"}`}
-                    >
-                        Next
-                    </button>
-                </div>
+              <button
+                  onClick={() => paginate(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className={`px-4 py-2 rounded border text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all ${
+                      currentPage === totalPages 
+                      ? "bg-gray-100 text-gray-400 cursor-not-allowed" 
+                      : "bg-white text-gray-700 hover:bg-blue-100 border-gray-300"
+                  }`}
+              >
+                  Sau &raquo;
+              </button>
+          </div>
+      )}
       </div>
     </div>
   )

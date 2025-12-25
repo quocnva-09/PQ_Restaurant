@@ -9,8 +9,11 @@ const UserService = {
         try {
             const response = await api.get("/users");
 
-            const userResponses = response.data.map(apiResponse => apiResponse.result);
-            return userResponses;
+            if (Array.isArray(response.data)) {
+                return response.data.map(item => item.result);
+            }
+
+            return [];
         } catch (error) {
             console.error("Lỗi khi lấy danh sách người dùng:", error);
             throw error;

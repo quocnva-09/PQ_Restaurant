@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import ProductService from '../services/ProductService'; 
+import ReviewService from '../services/ReviewService'; 
 import { useUserContext } from '../context/UserContext'; 
 import { myAssets } from '../assets/assets'; 
 import Title from '../components/Title'
@@ -18,6 +19,8 @@ function ItemDetails() {
     const [selectedSize, setSelectedSize] = useState(""); 
     const [quantity, setQuantity] = useState(1);
     const [currentPrice, setCurrentPrice] = useState(0);
+    const [averageRating, setAverageRating] = useState(0);
+    const [totalReviews, setTotalReviews] = useState(0);
     const { 
         isAuthenticated, 
     } = useAuth();
@@ -57,10 +60,53 @@ function ItemDetails() {
             setLoading(false);
         }
     }, [isAuthenticated, productId, navigate]);
+    
+    const fetchAndCalculateRating = useCallback(async () => {
+        if (!productId) return;
+        try {
+            // Gọi Service lấy review
+            const reviewsData = await ReviewService.getReviewsByProductId(productId);
+            
+            // Lọc chỉ lấy review đã duyệt (ACCEPTED)
+            const acceptedReviews = reviewsData.filter(r => r.reviewStatus === 'ACCEPTED');
+
+            if (acceptedReviews.length > 0) {
+                // --- TÍNH TRUNG BÌNH CỘNG ---
+                const totalStars = acceptedReviews.reduce((sum, review) => sum + review.rating, 0);
+                const avg = totalStars / acceptedReviews.length;
+                
+                setAverageRating(avg); // Lưu điểm trung bình (VD: 4.5)
+                setTotalReviews(acceptedReviews.length); // Lưu tổng số đánh giá
+            } else {
+                setAverageRating(0);
+                setTotalReviews(0);
+            }
+
+        } catch (error) {
+            console.error("Error calculating rating:", error);
+        }
+    }, [productId]);
 
     useEffect(() => {
         fetchProductDetail();
-    }, [fetchProductDetail]);
+        fetchAndCalculateRating();
+    }, [fetchProductDetail, fetchAndCalculateRating]);
+
+    const renderStars = (rating) => {
+        // Làm tròn rating để hiển thị (VD: 4.6 -> 5 sao, hoặc dùng thư viện render nửa sao)
+        // Ở đây mình làm tròn theo quy tắc toán học (round)
+        const roundedRating = Math.round(rating); 
+        
+        return (
+            <div className="flex items-center gap-1 text-yellow-400 text-lg">
+                {[...Array(5)].map((_, index) => (
+                    <span key={index} className={index < roundedRating ? "text-yellow-400" : "text-gray-300"}>
+                        ★
+                    </span>
+                ))}
+            </div>
+        );
+    };
 
     // THÊM VÀO GIỎ HÀNG 
     const handleAddToCart = () => {
@@ -130,6 +176,16 @@ function ItemDetails() {
                         <span className='text-gray-500'>{product.name}</span>
                     </nav>
                     <h1 className='text-4xl font-extrabold text-gray-900'>{product.name}</h1>
+
+                    <div className='flex items-center gap-3'>
+                        <div className='flex items-center'>
+                            {renderStars(averageRating)}
+                        </div>
+                        <div className='text-sm text-gray-500 font-medium'>
+                            <span className='text-gray-900 font-bold'>{averageRating.toFixed(1)}</span>/5 
+                            ({totalReviews} đánh giá)
+                        </div>
+                    </div>
                     
                     <div className='border-t border-b py-4 border-gray-200'>
                         {currentPrice > 0 ? (

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ReviewService from '../../services/ReviewService';
+import { myAssets } from '../../assets/assets';
+import { toast } from 'react-toastify';
 
 const ViewReview = () => {
     // --- State dữ liệu & Pagination ---
@@ -12,6 +14,8 @@ const ViewReview = () => {
     const [selectedReview, setSelectedReview] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const STATUS_OPTIONS = ["PENDING", "ACCEPTED", "DENIED", "HIDE", "SHOW"];
+
     useEffect(() => {
         fetchReviews();
     }, []);
@@ -19,13 +23,74 @@ const ViewReview = () => {
     const fetchReviews = async () => {
         try {
             const data = await ReviewService.getAllReviews();
-            // Sort: Mới nhất lên đầu
-            const sortedData = data.sort((a, b) => b.id - a.id);
-            setReviews(sortedData);
+            // Data trả về đã là mảng, không cần .result nữa (dựa theo Service đã viết)
+            if (Array.isArray(data)) {
+                const sortedData = [...data].sort((a, b) => b.id - a.id); // Sort: Mới nhất lên đầu
+                setReviews(sortedData);
+            } else {
+                setReviews([]);
+            }
         } catch (error) {
             console.error("Lỗi tải review:", error);
+            setReviews([]);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleStatusChange = async (e, review) => {
+        const newStatus = e.target.value;
+        const oldStatus = review.reviewStatus;
+
+        // Nếu không thay đổi thì không làm gì
+        if (newStatus === oldStatus) return;
+
+        try {
+            // Chuẩn bị dữ liệu theo đúng ReviewRequest backend yêu cầu
+            const reviewData = {
+                rating: review.rating,
+                comment: review.comment,
+                reviewStatus: newStatus,
+                userId: review.user?.id,
+                productId: review.product?.id
+            };
+
+            await ReviewService.updateReview(review.id, reviewData);
+            
+            toast.success(`Đã cập nhật trạng thái thành: ${newStatus}`);
+
+            // Cập nhật lại UI Local để không cần load lại trang
+            setReviews(prevReviews => 
+                prevReviews.map(item => 
+                    item.id === review.id ? { ...item, reviewStatus: newStatus } : item
+                )
+            );
+        } catch (error) {
+            console.error("Lỗi cập nhật trạng thái:", error);
+            toast.error("Cập nhật thất bại!");
+            // Reset lại select box về giá trị cũ nếu lỗi (tùy chọn)
+            e.target.value = oldStatus; 
+        }
+    };
+
+    // --- LOGIC: XÓA REVIEW ---
+    const handleDelete = async (reviewId) => {
+        if (window.confirm("Bạn có chắc chắn muốn xóa đánh giá này không? Hành động này không thể hoàn tác.")) {
+            try {
+                await ReviewService.deleteReview(reviewId);
+                toast.success("Xóa đánh giá thành công!");
+                
+                // Xóa khỏi danh sách hiện tại
+                setReviews(prevReviews => prevReviews.filter(item => item.id !== reviewId));
+                
+                // Nếu đang mở modal của item này thì đóng lại
+                if (selectedReview?.id === reviewId) {
+                    closeModal();
+                }
+            } catch (error) {
+                console.error("Lỗi xóa review:", error);
+                toast.error("Không thể xóa đánh giá này.");
+            }
         }
     };
 
@@ -105,26 +170,26 @@ const ViewReview = () => {
                             <tbody className="divide-y divide-gray-200">
                                 {currentReviews.length > 0 ? (
                                     currentReviews.map((review) => (
-                                        <tr key={review.id} className="hover:bg-gray-50 transition-colors duration-200">
+                                        <tr key={review.id} className="hover:bg-slate-100 transition-colors duration-200">
                                             <td className="px-6 py-4 font-medium text-gray-900">
                                                 #{review.id}
                                             </td>
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="h-10 w-10 flex-shrink-0">
+                                                    <div className="h-10 w-10 flex-shrink-0 bg-white rounded border border-gray-200 flex items-center justify-center overflow-hidden">
                                                         {review.product?.productImage ? (
                                                             <img 
-                                                                className="h-10 w-10 rounded object-cover border border-gray-200" 
-                                                                src={review.product.productImage} 
+                                                                className="h-full w-full object-contain" 
+                                                                src={myAssets[review.product.productImage]}
                                                                 alt={review.product.name} 
                                                             />
                                                         ) : (
-                                                            <div className="h-10 w-10 rounded bg-gray-200 flex items-center justify-center text-xs">No img</div>
+                                                            <div className="text-xs">No img</div>
                                                         )}
                                                     </div>
                                                     <div>
-                                                        <div className="font-medium text-gray-900">{review.product?.name}</div>
-                                                        <div className="text-xs text-gray-500">{review.product?.productCode}</div>
+                                                        <div className="font-medium text-gray-900 line-clamp-1 w-32">{review.product?.name}</div>
+                                                        <div className="text-xs text-gray-500">#{review.product?.id}</div>
                                                     </div>
                                                 </div>
                                             </td>
@@ -136,7 +201,21 @@ const ViewReview = () => {
                                                 {renderStars(review.rating)}
                                             </td>
                                             <td className="px-6 py-4">
-                                                {getStatusBadge(review.reviewStatus)}
+                                                <select
+                                                    value={review.reviewStatus}
+                                                    onChange={(e) => handleStatusChange(e, review)}
+                                                    className={`
+                                                        text-xs font-semibold px-2 py-1 rounded-md border outline-none cursor-pointer transition-all
+                                                        focus:ring-2 focus:ring-blue-300
+                                                        ${getStatusBadge(review.reviewStatus)}
+                                                    `}
+                                                >
+                                                    {STATUS_OPTIONS.map(status => (
+                                                        <option key={status} value={status} className="bg-white text-gray-800">
+                                                            {status}
+                                                        </option>
+                                                    ))}
+                                                </select>
                                             </td>
                                             <td className="px-6 py-4 text-center">
                                                 <button 
@@ -166,23 +245,24 @@ const ViewReview = () => {
                         <button
                             onClick={() => paginate(currentPage - 1)}
                             disabled={currentPage === 1}
-                            className={`px-3 py-1 rounded border text-sm ${
+                            className={`px-4 py-2 rounded-lg border text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all ${
                                 currentPage === 1 
                                 ? "bg-gray-100 text-gray-400 cursor-not-allowed" 
-                                : "bg-white text-gray-700 hover:bg-gray-50 border-gray-300"
+                                : "bg-white text-gray-700 hover:bg-blue-100 border-gray-300"
                             }`}
                         >
                             &laquo; Trước
                         </button>
                         
-                        {[...Array(totalPages)].map((_, i) => (
+                        {/* Chỉ hiện tối đa 5 trang để tránh dài quá nếu data nhiều */}
+                        {[...Array(Math.min(totalPages, 5))].map((_, i) => (
                             <button
                                 key={i + 1}
                                 onClick={() => paginate(i + 1)}
-                                className={`px-3 py-1 rounded border text-sm ${
+                                className={`px-4 py-2 rounded border text-sm transition-all ${
                                     currentPage === i + 1
-                                        ? "bg-blue-600 text-white border-blue-600"
-                                        : "bg-white text-gray-700 hover:bg-gray-50 border-gray-300"
+                                    ? "bg-blue-600 text-white border-blue-600"
+                                    : "bg-white text-gray-700 hover:bg-blue-100 border-gray-300"
                                 }`}
                             >
                                 {i + 1}
@@ -192,10 +272,10 @@ const ViewReview = () => {
                         <button
                             onClick={() => paginate(currentPage + 1)}
                             disabled={currentPage === totalPages}
-                            className={`px-3 py-1 rounded border text-sm ${
+                            className={`px-4 py-2 rounded border text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all ${
                                 currentPage === totalPages 
                                 ? "bg-gray-100 text-gray-400 cursor-not-allowed" 
-                                : "bg-white text-gray-700 hover:bg-gray-50 border-gray-300"
+                                : "bg-white text-gray-700 hover:bg-blue-100 border-gray-300"
                             }`}
                         >
                             Sau &raquo;
@@ -206,10 +286,10 @@ const ViewReview = () => {
 
             {/* --- MODAL DETAIL --- */}
             {isModalOpen && selectedReview && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm p-4">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-50 bg-opacity-50 backdrop-blur-sm p-4">
                     <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden animate-fade-in-down">
                         {/* Modal Header */}
-                        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100 bg-gray-50">
+                        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100 bg-slate-50">
                             <h3 className="text-lg font-bold text-gray-800">
                                 Chi tiết Đánh giá <span className="text-blue-600">#{selectedReview.id}</span>
                             </h3>
@@ -230,16 +310,17 @@ const ViewReview = () => {
                                     <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Sản phẩm</h4>
                                     <div className="flex items-start gap-4 p-4 bg-blue-50 rounded-lg border border-blue-100">
                                         {selectedReview.product?.productImage && (
-                                            <img 
-                                                src={selectedReview.product.productImage} 
-                                                alt="" 
-                                                className="w-16 h-16 rounded-md object-cover border border-blue-200"
-                                            />
+                                            <div className="w-16 h-16 rounded-md bg-white border border-blue-200 flex items-center justify-center overflow-hidden flex-shrink-0">
+                                                 <img 
+                                                    src={myAssets[selectedReview.product.productImage]} // SỬ DỤNG myAssets
+                                                    alt="" 
+                                                    className="w-full h-full object-contain"
+                                                />
+                                            </div>
                                         )}
                                         <div>
-                                            <div className="font-bold text-gray-800">{selectedReview.product?.name}</div>
-                                            <div className="text-xs text-gray-500 mt-1">Code: {selectedReview.product?.productCode}</div>
-                                            <div className="text-xs text-blue-600 font-medium mt-1">Danh mục ID: {selectedReview.product?.categoryId}</div>
+                                            <div className="font-bold text-gray-800 line-clamp-2">{selectedReview.product?.name}</div>
+                                            <div className="text-xs text-blue-600 font-medium mt-1">ID Sản phẩm: {selectedReview.product?.id}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -247,7 +328,7 @@ const ViewReview = () => {
                                 {/* User Info Box */}
                                 <div>
                                     <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Người đánh giá</h4>
-                                    <div className="p-4 bg-gray-50 rounded-lg border border-gray-100 space-y-2 text-sm">
+                                    <div className="p-4 bg-slate-50 rounded-lg border border-gray-100 space-y-2 text-sm">
                                         <div className="flex justify-between">
                                             <span className="text-gray-500">Họ tên:</span>
                                             <span className="font-medium text-gray-900">{selectedReview.user?.fullName}</span>
@@ -256,10 +337,13 @@ const ViewReview = () => {
                                             <span className="text-gray-500">Username:</span>
                                             <span className="font-medium text-gray-900">{selectedReview.user?.username}</span>
                                         </div>
-                                        <div className="flex justify-between">
-                                            <span className="text-gray-500">Giới tính:</span>
-                                            <span className="font-medium text-gray-900">{selectedReview.user?.gender}</span>
-                                        </div>
+                                        {/* Chỉ hiển thị nếu có giới tính */}
+                                        {selectedReview.user?.gender && (
+                                            <div className="flex justify-between">
+                                                <span className="text-gray-500">Giới tính:</span>
+                                                <span className="font-medium text-gray-900">{selectedReview.user.gender}</span>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -273,34 +357,24 @@ const ViewReview = () => {
                                     <div>{getStatusBadge(selectedReview.reviewStatus)}</div>
                                 </div>
 
-                                <div className="flex-grow bg-gray-50 p-5 rounded-xl border border-gray-200 relative">
+                                <div className="flex-grow bg-slate-50 p-5 rounded-xl border border-gray-200 relative">
                                     <span className="absolute top-2 left-3 text-4xl text-gray-200 font-serif">“</span>
-                                    <p className="text-gray-700 italic relative z-10 pt-2 leading-relaxed">
+                                    <p className="text-gray-700 italic relative z-10 pt-2 leading-relaxed break-words">
                                         {selectedReview.comment}
                                     </p>
                                     <span className="absolute bottom-[-10px] right-4 text-4xl text-gray-200 font-serif">”</span>
                                 </div>
-
-                                {/* Actions (Ví dụ) */}
-                                {/* <div className="mt-6 grid grid-cols-2 gap-3">
-                                    <button 
-                                        className="py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors"
-                                        // onClick={() => handleApprove(selectedReview.id)}
-                                    >
-                                        Duyệt bài
-                                    </button>
-                                    <button 
-                                        className="py-2 px-4 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg text-sm font-medium transition-colors"
-                                        // onClick={() => handleDeny(selectedReview.id)}
-                                    >
-                                        Từ chối
-                                    </button>
-                                </div> */}
                             </div>
                         </div>
 
                         {/* Modal Footer */}
-                        <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 text-right">
+                        <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3">
+                            <button 
+                                onClick={() => handleDelete(selectedReview.id)}
+                                className="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 text-sm font-medium"
+                            >
+                                Xóa review này
+                            </button>
                             <button 
                                 onClick={closeModal} 
                                 className="px-5 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 font-medium text-sm transition-all"
