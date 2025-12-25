@@ -95,7 +95,7 @@ export const useAuth = ()=> {
         setAccessToken(null);
         
         // Chuyển hướng về trang đăng nhập
-        setTimeout(() => navigate('/login'), 3000); 
+        setTimeout(() => navigate('/login'), 1000); 
     }, [navigate]);
 
     //Cơ chế lắng nghe sự kiện localStorage (để đồng bộ hóa giữa các tab)

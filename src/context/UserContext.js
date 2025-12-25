@@ -85,7 +85,7 @@ export const UserContextProvider = ({children}) => {
 
     // Thêm Product vào Giỏ hàng 
     const addToCart = useCallback(async (quantity, size, note, productId) => {
-        if (isAuthenticated() === false) {
+        if (!isAuthenticated()) {
             toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
         }
         if (!size) return toast.error("Vui lòng chọn kích cỡ.");

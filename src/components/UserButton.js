@@ -23,10 +23,10 @@ const UserButton = () => {
         setLoading(true);
         try {
           logout();
-          setTimeout(() => navigate('/login'), 3000);
+          setTimeout(() => navigate('/login'), 1000);
         } catch (error) {
           console.error('Logout error:', error);
-          setTimeout(() => navigate('/login'), 3000);
+          setTimeout(() => navigate('/login'), 1000);
         } finally {
           setLoading(false);
         }
