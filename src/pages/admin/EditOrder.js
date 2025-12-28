@@ -112,7 +112,7 @@ function EditOrder() {
     );
 
     return (
-        <div className="min-h-screen bg-slate-50 p-4 md:p-8 pb-20">
+        <div className="min-h-screen bg-slate-50 p-4 md:p-8 pb-20 w-full">
             <div className="">
                 
                 {/* Header */}

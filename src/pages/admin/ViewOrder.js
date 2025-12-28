@@ -159,7 +159,7 @@ function ViewOrder() {
                                     </button>
                                     <button 
                                         onClick={() => handleDeleteOrder(order.id)}
-                                        className='px-3 py-1.5 bg-white text-red-600 border border-red-200 text-xs font-bold uppercase rounded hover:bg-red-50 transition-all'
+                                        className='px-3 py-1.5 bg-white text-red-600 border border-red-200 text-xs font-bold uppercase rounded hover:bg-red-500 transition-all'
                                     >
                                         Xóa
                                     </button>

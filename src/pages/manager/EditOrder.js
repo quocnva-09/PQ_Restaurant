@@ -74,28 +74,23 @@ function EditOrderManager() {
         setSaving(true);
 
         try {
-            // Chuẩn bị Payload theo cấu trúc OrderRequest
-            // Merge dữ liệu gốc (originalOrder) với dữ liệu mới sửa (formData)
             const requestPayload = {
-                ...originalOrder, // Spread các trường cũ: orderDetails, address, userId, orderDate...
-                
-                // Ghi đè các trường đã sửa:
+                ...originalOrder,
+ 
                 status: formData.status,
-                active: formData.active === 'true', // Convert string -> boolean
+                active: formData.active === 'true',
                 shippingMethod: formData.shippingMethod || null,
                 trackingNumber: formData.trackingNumber || null,
                 
-                // Đóng gói lại Note thành JSON string
                 note: JSON.stringify({ note: formData.note }) 
             };
 
-            // Log kiểm tra payload trước khi gửi
             console.log("Sending Update Payload:", requestPayload);
 
             await OrderService.updateOrder(orderId, requestPayload);
             
             toast.success("Cập nhật đơn hàng thành công!");
-            navigate(`/manager/order-detail/${orderId}`); // Quay về trang xem chi tiết
+            navigate(`/manager/order-detail/${orderId}`);
 
         } catch (error) {
             console.error("Update failed:", error);
@@ -112,7 +107,7 @@ function EditOrderManager() {
     );
 
     return (
-        <div className="min-h-screen bg-slate-50 p-4 md:p-8 pb-20">
+        <div className="min-h-screen bg-slate-50 p-4 md:p-8 pb-20 w-full">
             <div className="">
                 
                 {/* Header */}

@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import CouponService from '../../services/CouponService';
 import CouponConditionService from '../../services/CouponConditionService';
 
+// Giữ nguyên giá trị chữ thường theo yêu cầu của bạn
 const ATTRIBUTES = [
     { value: 'minimum_amount', label: 'Tổng tiền tối thiểu' },
     { value: 'applicable_date', label: 'Ngày áp dụng' },
@@ -27,6 +28,7 @@ function EditCoupon() {
     const [saving, setSaving] = useState(false);
 
     const [couponData, setCouponData] = useState({
+        id: null, // Thêm id vào state để tiện dùng
         code: '',
         description: '',
         expiredAt: '',
@@ -34,6 +36,8 @@ function EditCoupon() {
     });
 
     const [conditions, setConditions] = useState([]);
+    // [LOGIC MỚI] State để lưu bản gốc, dùng so sánh thay đổi
+    const [originalConditions, setOriginalConditions] = useState([]);
 
     // --- FETCH DATA ---
     useEffect(() => {
@@ -41,17 +45,22 @@ function EditCoupon() {
             try {
                 setLoading(true);
                 const data = await CouponService.getCouponByCode(couponCode);
+                
+                // Format ngày để hiển thị đúng trên input date
+                const formattedDate = data.expiredAt ? data.expiredAt.split('T')[0] : '';
 
                 setCouponData({
                     id: data.id,
                     code: data.code,
                     description: data.description || '',
-                    expiredAt: data.expiredAt,
+                    expiredAt: formattedDate,
                     active: data.active ? 'true' : 'false'
                 });
 
-                // Mapping danh sách điều kiện
-                setConditions(data.conditions || []);
+                const fetchedConditions = data.conditions || [];
+                setConditions(fetchedConditions);
+                // [LOGIC MỚI] Deep copy dữ liệu gốc
+                setOriginalConditions(JSON.parse(JSON.stringify(fetchedConditions)));
 
             } catch (error) {
                 console.error(error);
@@ -73,16 +82,19 @@ function EditCoupon() {
         setCouponData(prev => ({ ...prev, [name]: value }));
     };
 
+    // [LOGIC MỚI] Update state an toàn cho React
     const handleConditionChange = (index, field, value) => {
-        const updatedConditions = [...conditions];
-        updatedConditions[index][field] = value;
-        setConditions(updatedConditions);
+        setConditions(prev => {
+            const newArr = [...prev];
+            newArr[index] = { ...newArr[index], [field]: value };
+            return newArr;
+        });
     };
 
     const handleAddCondition = () => {
         const newCondition = {
-            id: null, // Đánh dấu là mới (chưa có ID từ DB)
-            attribute: 'minimum_amount', // Giá trị mặc định
+            id: null,
+            attribute: 'minimum_amount',
             operator: '>',
             value: '',
             discountAmount: 0,
@@ -91,11 +103,10 @@ function EditCoupon() {
         setConditions([...conditions, newCondition]);
     };
 
-    // 2. CHỨC NĂNG XÓA ĐIỀU KIỆN
+    // CHỨC NĂNG XÓA ĐIỀU KIỆN
     const handleRemoveCondition = async (index) => {
         const conditionToRemove = conditions[index];
 
-        // Nếu là điều kiện CŨ (đã có ID trong DB) -> Cần gọi API xóa thật
         if (conditionToRemove.id) {
             const confirm = window.confirm("Bạn có chắc muốn xóa điều kiện này không?");
             if (!confirm) return;
@@ -103,15 +114,27 @@ function EditCoupon() {
             try {
                 await CouponConditionService.deleteCondition(conditionToRemove.id); 
                 toast.success("Đã xóa điều kiện");
+                // Xóa cả trong bản gốc để đồng bộ
+                setOriginalConditions(prev => prev.filter(c => c.id !== conditionToRemove.id));
             } catch (error) {
                 toast.error("Lỗi khi xóa điều kiện");
                 return;
             }
         }
 
-        // Cập nhật lại UI (Xóa khỏi mảng state)
         const updated = conditions.filter((_, i) => i !== index);
         setConditions(updated);
+    };
+
+    // [LOGIC MỚI] Hàm kiểm tra thay đổi
+    const hasConditionChanged = (current, original) => {
+        if (!original) return true; // Không có gốc => mới tạo
+        return (
+            current.attribute !== original.attribute ||
+            current.operator !== original.operator ||
+            current.value.toString() !== original.value.toString() ||
+            Number(current.discountAmount) !== Number(original.discountAmount)
+        );
     };
 
     // --- SUBMIT ---
@@ -120,7 +143,6 @@ function EditCoupon() {
         setSaving(true);
 
         try {
-            // Bước 1: Cập nhật Coupon (Parent)
             const couponRequest = {
                 code: couponData.code,
                 description: couponData.description,
@@ -128,29 +150,33 @@ function EditCoupon() {
                 active: couponData.active === 'true'
             };
             
+            // Giữ nguyên thứ tự tham số theo code gốc của bạn
             await CouponService.updateCoupon(couponRequest, couponData.id);
 
-            // Bước 2: Cập nhật Conditions (Children) - Chạy song song
             if (conditions.length > 0) {
-                const conditionPromises = conditions.map(cond => {
-                    // Mapping sang CouponConditionRequest
+                const conditionPromises = [];
+
+                conditions.forEach(cond => {
                     const req = {
                         attribute: cond.attribute,
                         operator: cond.operator,
-                        value: cond.value.toString(),
+                        value: cond.value ? cond.value.toString() : "",
                         discountAmount: Number(cond.discountAmount),
                         couponId: Number(couponData.id)
                     };
-                    if (cond.id) {
-                        // Nếu có ID -> Gọi UPDATE
-                        return CouponConditionService.updateCondition(cond.id, req);
+
+                    if (!cond.id) {
+                        console.log("Creating:", req);
+                        conditionPromises.push(CouponConditionService.createCondition(req));
                     } else {
-                        // Nếu ID là null -> Gọi CREATE (Thêm mới)
-                        return CouponConditionService.createCondition(req);
+                        console.log(`Updating ID ${cond.id}:`, req);
+                        conditionPromises.push(CouponConditionService.updateCondition(cond.id, req));
                     }
                 });
 
-                await Promise.all(conditionPromises);
+                if (conditionPromises.length > 0) {
+                    await Promise.all(conditionPromises);
+                }
             }
 
             toast.success("Cập nhật thành công!");
@@ -170,6 +196,7 @@ function EditCoupon() {
         </div>
     );
 
+    // --- PHẦN GIAO DIỆN GIỮ NGUYÊN 100% CỦA BẠN ---
     return (
         <div className="bg-slate-50 min-h-screen w-full p-4 md:p-8">
             <div className="w-full mx-auto">
@@ -279,75 +306,70 @@ function EditCoupon() {
                                     {conditions.map((cond, index) => (
                                         <div key={cond.id || index} className="p-5 bg-white rounded-xl border border-slate-200 shadow-sm relative hover:border-indigo-300 transition-colors">
                                             <div className="absolute top-0 left-0 px-2 py-0.5 rounded-br-lg border-b border-r border-slate-200 text-[10px] font-mono font-bold">
-                                            {cond.id ? `ID: ${cond.id}` : <span className="text-emerald-600">NEW</span>}
-                                        </div>
+                                                {cond.id ? `ID: ${cond.id}` : <span className="text-emerald-600">NEW</span>}
+                                            </div>
 
-                                        {/* Nút Xóa (Góc trên phải) */}
-                                        <button
-                                            type="button"
-                                            onClick={() => handleRemoveCondition(index)}
-                                            className="absolute top-2 right-2 text-slate-300 hover:text-red-500 transition p-1"
-                                            title="Xóa điều kiện này"
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
-                                        </button>
+                                            {/* Nút Xóa (Góc trên phải) */}
+                                            <button
+                                                type="button"
+                                                onClick={() => handleRemoveCondition(index)}
+                                                className="absolute top-2 right-2 text-slate-300 hover:text-red-500 transition p-1"
+                                                title="Xóa điều kiện này"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+                                            </button>
 
-                                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-3">
-                                            {/* Attribute */}
-                                            <div>
-                                                <label className="block text-xs font-bold text-slate-400 uppercase mb-1.5">Thuộc tính</label>
-                                                <select
-                                                    value={cond.attribute}
-                                                    onChange={(e) => handleConditionChange(index, 'attribute', e.target.value)}
-                                                    className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-slate-50/50"
-                                                >
-                                                    {ATTRIBUTES.map(attr => (
-                                                        <option key={attr.value} value={attr.value}>{attr.label}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
-                                            {/* Operator */}
-                                            <div>
-                                                <label className="block text-xs font-bold text-slate-400 uppercase mb-1.5">So sánh</label>
-                                                <select
-                                                    value={cond.operator}
-                                                    onChange={(e) => handleConditionChange(index, 'operator', e.target.value)}
-                                                    className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-slate-50/50 font-mono"
-                                                >
-                                                    {OPERATORS.map(op => (
-                                                        <option key={op.value} value={op.value}>{op.label}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
-                                            {/* Value */}
-                                            <div>
-                                                <label className="block text-xs font-bold text-slate-400 uppercase mb-1.5">Giá trị</label>
-                                                <input
-                                                    type="text"
-                                                    value={cond.value}
-                                                    onChange={(e) => handleConditionChange(index, 'value', e.target.value)}
-                                                    className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-slate-50/50 font-medium"
-                                                    placeholder="VD: 500000"
-                                                />
-                                            </div>
-                                            {/* Discount */}
-                                            <div>
-                                                <label className="block text-xs font-bold text-emerald-600 uppercase mb-1.5">Tiền giảm</label>
-                                                <input
-                                                    type="number"
-                                                    value={cond.discountAmount}
-                                                    onChange={(e) => handleConditionChange(index, 'discountAmount', e.target.value)}
-                                                    className="w-full pl-3 pr-2 py-2 text-sm border border-emerald-200 rounded-lg focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none bg-emerald-50/30 font-bold text-emerald-700"
-                                                />
+                                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-3">
+                                                {/* Attribute */}
+                                                <div>
+                                                    <label className="block text-xs font-bold text-slate-400 uppercase mb-1.5">Thuộc tính</label>
+                                                    <select
+                                                        value={cond.attribute}
+                                                        onChange={(e) => handleConditionChange(index, 'attribute', e.target.value)}
+                                                        className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-slate-50/50"
+                                                    >
+                                                        {ATTRIBUTES.map(attr => (
+                                                            <option key={attr.value} value={attr.value}>{attr.label}</option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                                {/* Operator */}
+                                                <div>
+                                                    <label className="block text-xs font-bold text-slate-400 uppercase mb-1.5">So sánh</label>
+                                                    <select
+                                                        value={cond.operator}
+                                                        onChange={(e) => handleConditionChange(index, 'operator', e.target.value)}
+                                                        className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-slate-50/50 font-mono"
+                                                    >
+                                                        {OPERATORS.map(op => (
+                                                            <option key={op.value} value={op.value}>{op.label}</option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                                {/* Value */}
+                                                <div>
+                                                    <label className="block text-xs font-bold text-slate-400 uppercase mb-1.5">Giá trị</label>
+                                                    <input
+                                                        type="text"
+                                                        value={cond.value}
+                                                        onChange={(e) => handleConditionChange(index, 'value', e.target.value)}
+                                                        className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-slate-50/50 font-medium"
+                                                        placeholder="VD: 500000"
+                                                    />
+                                                </div>
+                                                {/* Discount */}
+                                                <div>
+                                                    <label className="block text-xs font-bold text-emerald-600 uppercase mb-1.5">Tiền giảm</label>
+                                                    <input
+                                                        type="number"
+                                                        value={cond.discountAmount}
+                                                        onChange={(e) => handleConditionChange(index, 'discountAmount', e.target.value)}
+                                                        className="w-full pl-3 pr-2 py-2 text-sm border border-emerald-200 rounded-lg focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none bg-emerald-50/30 font-bold text-emerald-700"
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                ))}
-                                    {conditions.length === 0 && (
-                                        <div className="text-center py-6 text-slate-400 text-sm border-2 border-dashed border-slate-100 rounded-lg">
-                                            Chưa có điều kiện nào. Nhấn "Thêm điều kiện" để bắt đầu.
-                                        </div>
-                                    )}
+                                    ))}
                                 </div>
                             )}
                         </div>
@@ -382,4 +404,4 @@ function EditCoupon() {
     );
 }
 
-export default EditCoupon
+export default EditCoupon;

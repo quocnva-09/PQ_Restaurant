@@ -88,7 +88,7 @@ const ViewBlog = () => {
     if (loading) return <div className="p-10 text-center">Đang tải dữ liệu...</div>;
 
     return (
-        <div className="p-6 bg-gray-50/50 min-h-screen w-full">
+        <div className="p-6 bg-slate-50 min-h-screen w-full">
             <div className="max-w-7xl mx-auto">
                 
                 {/* --- HEADER SÁNG SỦA --- */}
@@ -100,7 +100,7 @@ const ViewBlog = () => {
                     {/* NÚT THÊM MỚI: MÀU XANH DƯƠNG SÁNG + BÓNG ĐỔ */}
                     <Link 
                         to="/admin/add-blog" 
-                        className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/30 font-semibold transform hover:-translate-y-0.5"
+                        className="flex items-center gap-2 bg-primary text-black px-6 py-3 rounded-xl transition-all shadow-lg font-semibold transform hover:-translate-y-0.5"
                     >
                         <FaPlus className="text-sm"/> <span>Viết bài mới</span>
                     </Link>
@@ -143,8 +143,8 @@ const ViewBlog = () => {
                                                 {getStatusBadge(blog.status)}
                                             </td>
                                             <td className="px-6 py-4 text-center">
-                                                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-50 text-gray-600 font-medium border border-gray-100">
-                                                    <FaEye className="text-blue-400" />
+                                                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100 text-gray-600 font-medium border border-gray-100">
+                                                    <FaEye className="text-blue-500" />
                                                     {blog.viewCount?.toLocaleString() || 0}
                                                 </div>
                                             </td>
