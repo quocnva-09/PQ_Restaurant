@@ -141,8 +141,8 @@ const ProductReviews = ({ productId }) => {
             <div className="flex flex-col gap-4">
                 {reviews.length > 0 ? (
                     <>
-                        {/* 2. Chỉ hiển thị 2 review đầu tiên dùng slice(0, 2) */}
-                        {reviews.slice(0, 2).map((rev, index) => (
+                        {/* Chỉ hiển thị 3 review đầu tiên */}
+                        {reviews.slice(0, 3).map((rev, index) => (
                             <div key={index} className="border-b pb-4 last:border-0">
                                 <div className="flex items-center gap-2 mb-1">
                                     <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center font-bold text-gray-600 text-xs">
@@ -156,7 +156,7 @@ const ProductReviews = ({ productId }) => {
                         ))}
 
                         {/* Hiển thị nút xem tất cả nếu có nhiều hơn 2 review */}
-                        {reviews.length > 2 && (
+                        {reviews.length > 3 && (
                             <div className="mt-2 text-center">
                                 {/* Bạn cần định nghĩa Route này trong App.js */}
                                 <Link 
@@ -172,7 +172,7 @@ const ProductReviews = ({ productId }) => {
                         )}
                     </>
                 ) : (
-                    <div className="text-center py-8 bg-gray-50 rounded-xl">
+                    <div className="text-center py-8 bg-slate-50 rounded-xl">
                         <p className="text-gray-500">Chưa có đánh giá nào cho sản phẩm này.</p>
                         <p className="text-sm text-gray-400 mt-1">Hãy là người đầu tiên đánh giá!</p>
                     </div>

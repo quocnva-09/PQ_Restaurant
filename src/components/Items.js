@@ -1,8 +1,13 @@
-import React, {useState, useCallback, useEffect} from 'react'
+import React, {useState, useCallback, useEffect, useMemo} from 'react'
 import { myAssets } from '../assets/assets'
 import { useUserContext } from '../context/UserContext';
 import ReviewService from '../services/ReviewService'
-
+const SIZE_ORDER = {
+    "S": 1,
+    "M": 2,
+    "L": 3,
+    "R": 4,
+};
 
 const Items = ({product}) => {
 
@@ -11,6 +16,23 @@ const Items = ({product}) => {
     const {addToCart, navigate}=useUserContext();
     const imageSrc = myAssets[product.productImage];
     const [averageRating, setAverageRating] = useState(0);
+
+    const sortedPrices = useMemo(() => {
+        if (!product.prices) return [];
+        // Copy mảng ra để sort không ảnh hưởng mảng gốc
+        return [...product.prices].sort((a, b) => {
+            const orderA = SIZE_ORDER[a.size] || 99; // Nếu size lạ thì cho xuống cuối
+            const orderB = SIZE_ORDER[b.size] || 99;
+            return orderA - orderB;
+        });
+    }, [product.prices]);
+
+    useEffect(() => {
+        if (sortedPrices.length > 0) {
+            setSize(sortedPrices[0].size);
+            setPrice(sortedPrices[0].price);
+        }
+    }, [sortedPrices]);
 
     const formatCurrency = (value) => {
     if (typeof value !== "number" || isNaN(value)) return "";
@@ -21,9 +43,12 @@ const Items = ({product}) => {
         }).format(value);
     };
 
-    const handleAddToCart = () => {
-        addToCart(1,size,"",product.id); 
-    };
+    const handleAddToCart = useCallback(async(e) => {
+        e.stopPropagation(); 
+        e.preventDefault();
+        console.log("Adding to cart:", { size, id: product.id });
+       await addToCart(1,size,"",product.id); 
+    },[addToCart, product.id, size]);
 
     const fetchAndCalculateRating = useCallback(async () => {
         if (!product.id) return;
@@ -87,10 +112,11 @@ const Items = ({product}) => {
             {/* Product Size */}
             <div className='flex justify-between items-center p-3 pt-0'>
                 <div className='flex gap-2 items-center'>
-                    {product.prices.map((item,i)=>(
+                    {sortedPrices.map((item,i)=>(
                         <button 
                             key={i}
-                            onClick={()=>{
+                            onClick={(e)=>{
+                                e.stopPropagation();
                                 setSize(item.size)
                                 setPrice(item.price)
                             }}

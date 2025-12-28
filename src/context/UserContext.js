@@ -90,22 +90,25 @@ export const UserContextProvider = ({children}) => {
         }
         if (!size) return toast.error("Vui lòng chọn kích cỡ.");
 
-        const cartItemRequest = {
+        else {
+            const cartItemRequest = {
             "quantity" : quantity,
             "size" : size,
             "note" : note,
             "productId" : productId
-        };
+            };
 
-        console.log("Item", cartItemRequest);
+            console.log("Item", cartItemRequest);
 
-        try {
-            await CartService.addItemToCart(cartItemRequest); 
-            toast.success("Add to cart success!");
-            await fetchCart(); 
-        } catch (error) {
-            toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
+            try {
+                await CartService.addItemToCart(cartItemRequest); 
+                toast.success("Add to cart success!");
+                await fetchCart(); 
+            } catch (error) {
+                toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
+            }
         }
+        
     }, [isAuthenticated, fetchCart]);
 
     // Xóa 1 Product mục khỏi Giỏ hàng 

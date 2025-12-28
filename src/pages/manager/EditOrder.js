@@ -146,7 +146,7 @@ function EditOrder() {
                                         className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition font-medium text-slate-700"
                                     >
                                         <option value="PENDING">PENDING (Chờ xử lý)</option>
-                                        <option value="ACCEPTED">ACCEPTED (Đã nhận)</option>
+                                        <option value="COMPLETED">COMPLETED (Đã nhận)</option>
                                         <option value="PAID">PAID (Đã thanh toán)</option>
                                         <option value="NOT_PAY">NOT_PAY (Chưa thanh toán)</option>
                                         <option value="DENIED">DENIED (Từ chối)</option>

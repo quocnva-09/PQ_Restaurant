@@ -56,7 +56,7 @@ function Dashboard() {
     const productCounts = {};
 
     orders.forEach(order => {
-      const isPaid = order.status === "ACCEPTED" || order.status === "PAID";
+      const isPaid = order.status === "COMPLETED" || order.status === "PAID";
       if (isPaid) {
         totalMoney += Number(order.totalMoney) || 0;
         paidCount += 1;
@@ -130,7 +130,7 @@ function Dashboard() {
       if (isValid(oDate) && isWithinInterval(oDate, { start: startDate, end: endDate })) {
         const key = getLabelKey(oDate);
         if (dataMap[key]) {
-          // if (order.status === "ACCEPTED" || order.status === "PAID") {
+          // if (order.status === "COMPLETED" || order.status === "PAID") {
           //   dataMap[key].rev += Number(order.totalMoney || 0);
           // }
           // dataMap[key].count += 1;

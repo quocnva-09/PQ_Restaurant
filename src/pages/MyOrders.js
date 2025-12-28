@@ -24,8 +24,8 @@ const MyOrders = () => {
 
     try {
       const data = await OrderService.getOrdersByCurrentUser();
-      
-      setOrders(data.result); 
+      const response =data.result.reverse(); 
+      setOrders(response); 
       console.log("Orders loaded for current user:", data);
     } catch (err) {
       toast.error("Error fetching current user's orders:", err);

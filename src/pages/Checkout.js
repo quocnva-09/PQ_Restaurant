@@ -55,7 +55,6 @@ const Checkout = () => {
         try {
             setIsProcessing(true);
             await processOrder(totalAmount);
-            // Sau khi xong, Context hoặc logic bên trong processOrder sẽ điều hướng trang
         } catch (error) {
             console.error(error);
             toast.error("Có lỗi xảy ra khi xử lý đơn hàng.");

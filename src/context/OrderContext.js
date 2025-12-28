@@ -143,7 +143,7 @@ export const OrderProvider = ({ children }) => {
             if (paymentMethodBE === "COD") {
                 toast.success("Đặt hàng thành công! Cảm ơn bạn đã mua hàng.");
                 await fetchCart();
-                clearOrderData(); // Xóa dữ liệu tạm thời
+                clearOrderData();
                 navigate('/my-orders'); 
             } 
             else {

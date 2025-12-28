@@ -199,14 +199,14 @@ function ViewOrder() {
                                         onChange={(e) => handleStatusChange(order, e.target.value)}
                                         className={`text-xs font-bold py-1.5 px-3 rounded border-none cursor-pointer outline-none transition-colors
                                             ${order.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' : 
-                                            order.status === 'ACCEPTED' ? 'bg-blue-100 text-blue-800' :
+                                            order.status === 'COMPLETED' ? 'bg-blue-100 text-blue-800' :
                                             order.status === 'PAID' ? 'bg-green-100 text-green-800' :
                                             order.status === 'DENIED' ? 'bg-red-100 text-red-800' :
                                             // order.status === 'CANCELLED' ? 'bg-red-100 text-red-800' :
                                             'bg-gray-100 text-gray-800'}`}
                                     >
                                         <option value="PENDING">PENDING</option>
-                                        <option value="ACCEPTED">ACCEPTED</option>
+                                        <option value="COMPLETED">COMPLETED</option>
                                         <option value="DENIED">DENIED</option>
                                         <option value="NOT_PAY">NOT_PAY</option>
                                         <option value="PAID">PAID</option>
