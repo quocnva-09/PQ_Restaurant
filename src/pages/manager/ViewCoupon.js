@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import CouponService from '../../services/CouponService';
 import { myAssets } from '../../assets/assets'; 
-function ViewCoupon() {
+function ViewCouponManager() {
 
     const navigate = useNavigate();
     const [coupons, setCoupons] = useState([]);
@@ -180,4 +180,4 @@ function ViewCoupon() {
   )
 }
 
-export default ViewCoupon
+export default ViewCouponManager

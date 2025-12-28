@@ -11,7 +11,7 @@ const initialFormState = {
     parentCategory: '',
 };
 
-function AddCategory() {
+function AddCategoryManager() {
     const navigate = useNavigate();
     const [formData, setFormData] = useState(initialFormState);
     const [allCategories, setAllCategories] = useState([]); // Để chọn danh mục cha
@@ -128,4 +128,4 @@ function AddCategory() {
     );
 }
 
-export default AddCategory;
+export default AddCategoryManager;

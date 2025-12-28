@@ -59,12 +59,8 @@ export const UserContextProvider = ({children}) => {
     }, []);
 
     const fetchCart = useCallback(async () => {
-    if (!isAuthenticated()) {
-            setCart(initialCartState);
-            return;
-        }
 
-        try {
+    try {
             const response = await CartService.getCart();
             const newCartData = response.result; 
 
@@ -81,7 +77,8 @@ export const UserContextProvider = ({children}) => {
 
             setCart(initialCartState); 
         }
-    }, [isAuthenticated]);
+
+    }, []);
 
     // Thêm Product vào Giỏ hàng 
     const addToCart = useCallback(async (quantity, size, note, productId) => {
@@ -90,23 +87,21 @@ export const UserContextProvider = ({children}) => {
         }
         if (!size) return toast.error("Vui lòng chọn kích cỡ.");
 
-        else {
-            const cartItemRequest = {
+        const cartItemRequest = {
             "quantity" : quantity,
             "size" : size,
             "note" : note,
             "productId" : productId
-            };
+        };
 
-            console.log("Item", cartItemRequest);
+        console.log("Item", cartItemRequest);
 
-            try {
-                await CartService.addItemToCart(cartItemRequest); 
-                toast.success("Add to cart success!");
-                await fetchCart(); 
-            } catch (error) {
-                toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
-            }
+        try {
+            await CartService.addItemToCart(cartItemRequest); 
+            toast.success("Add to cart success!");
+            await fetchCart(); 
+        } catch (error) {
+            toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
         }
         
     }, [isAuthenticated, fetchCart]);
@@ -199,10 +194,18 @@ export const UserContextProvider = ({children}) => {
     }, [cart.cartItems]);
 
     useEffect(()=>{
-        fetchCart();
         fetchProducts();
         
-    },[fetchCart, fetchProducts]);
+    },[fetchProducts]);
+
+    useEffect(() => {
+
+        if (isAuthenticated()) {
+            fetchCart();
+        } else {
+            setCart(initialCartState);
+        }
+}, [isAuthenticated, fetchCart]);
 
     const value={
         isAuthenticated,

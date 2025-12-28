@@ -87,7 +87,21 @@ const ReviewService = {
         } catch (error) {
             throw error;
         }
-    }
+    },
+    changeReviewStatus: async (reviewId, status) => {
+        try {
+
+            const response = await api.post(`/reviews/change-status/${reviewId}`, null, {
+                params: {
+                    status: status
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Lỗi khi thay đổi trạng thái review:", error);
+            throw error;
+        }
+    },
 
 };
 

@@ -54,11 +54,6 @@ function Sidebar() {
       icon: myAssets.list,
     },
     {
-      path:"/admin/list-comment",
-      label:"List Comment",
-      icon: myAssets.list,
-    },
-    {
       path:"/admin/list-blog",
       label:"List Blog",
       icon: myAssets.list,

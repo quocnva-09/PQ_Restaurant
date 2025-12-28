@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { myAssets } from '../../assets/assets';
 import { useNavigate } from 'react-router-dom';
 
-function ViewPromotion() {
+function ViewPromotionManager() {
 
   const navigate=useNavigate();
   const [promotion, setPromotion] = useState([]);
@@ -170,4 +170,4 @@ function ViewPromotion() {
   )
 }
 
-export default ViewPromotion
+export default ViewPromotionManager

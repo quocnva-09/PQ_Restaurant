@@ -9,7 +9,7 @@ const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('vi-VN');
 };
 
-function ViewOrder() {
+function ViewOrderManager() {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const { formatCurrency, navigate } = useUserContext();
@@ -153,7 +153,7 @@ function ViewOrder() {
                                 <div className='flex flex-col gap-2 flex-shrink-0 min-w-[100px]'>
                                     <button 
                                         onClick={() => navigate(`/manager/order-detail/${order.id}`)}
-                                        className='px-3 py-1.5 bg-slate-800 text-white text-xs font-semibold rounded hover:bg-slate-700 transition-all'
+                                        className='px-3 py-1.5 bg-action text-white text-xs font-semibold rounded hover:bg-slate-700 transition-all'
                                     >
                                         Chi tiết
                                     </button>
@@ -266,4 +266,4 @@ function ViewOrder() {
     );
 }
 
-export default ViewOrder;
+export default ViewOrderManager;

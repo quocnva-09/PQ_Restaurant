@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 const ITEMS_PER_PAGE = 8; 
 
-const ProductList = ({searchKeyword}) => {
+const ProductListManager = ({searchKeyword}) => {
 
     const navigate=useNavigate();
     const [products, setProducts] = useState([]);
@@ -211,4 +211,4 @@ const ProductList = ({searchKeyword}) => {
     );
 }
 
-export default ProductList
+export default ProductListManager

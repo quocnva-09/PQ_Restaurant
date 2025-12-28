@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { myAssets } from '../../assets/assets'; 
 
-function ViewCategory() {
+function ViewCategoryManager() {
     const navigate = useNavigate();
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -170,4 +170,4 @@ function ViewCategory() {
     );
 }
 
-export default ViewCategory;
+export default ViewCategoryManager;

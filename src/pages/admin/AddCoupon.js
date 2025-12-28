@@ -1,22 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { toast } from 'react-toastify';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import CouponService from '../../services/CouponService';
-import CouponConditionService from '../../services/CouponConditionService';
-
-const ATTRIBUTES = [
-    { value: 'minimum_amount', label: 'Tổng tiền tối thiểu' },
-    { value: 'applicable_date', label: 'Ngày áp dụng' },
-    { value: 'quantity', label: 'Số lượng sản phẩm' },
-];
-
-const OPERATORS = [
-    { value: '>', label: 'Lớn hơn (>)' },
-    { value: '>=', label: 'Lớn hơn hoặc bằng (>=)' },
-    { value: '<', label: 'Nhỏ hơn (<)' },
-    { value: '<=', label: 'Nhỏ hơn hoặc bằng (<=)' },
-    { value: '=', label: 'Bằng (=)' },
-];
 
 function AddCoupon() {
 
@@ -30,35 +15,9 @@ function AddCoupon() {
         active: 'true'
     });
 
-    const [conditions, setConditions] = useState([]);
-    // --- HANDLERS ---
     const handleCouponChange = (e) => {
         const { name, value } = e.target;
         setCouponData(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handleConditionChange = (index, field, value) => {
-        const updatedConditions = [...conditions];
-        updatedConditions[index][field] = value;
-        setConditions(updatedConditions);
-    };
-
-    const handleAddCondition = () => {
-        const newCondition = {
-            id: null,
-            attribute: 'minimum_amount',
-            operator: '>',
-            value: '',
-            discountAmount: 0,
-        };
-        setConditions([...conditions, newCondition]);
-    };
-
-    // CHỨC NĂNG XÓA ĐIỀU KIỆN
-    const handleRemoveCondition = async (index) => {
-        // Cập nhật lại UI (Xóa khỏi mảng state)
-        const updated = conditions.filter((_, i) => i !== index);
-        setConditions(updated);
     };
 
     // --- SUBMIT ---

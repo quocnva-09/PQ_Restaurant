@@ -11,7 +11,7 @@ const initialFormState = {
 };
 
 
-function AddPromotion() {
+function AddPromotionManager() {
     const navigate = useNavigate();
     const [formData, setFormData] = useState(initialFormState);
     const [loading, setLoading] = useState(false);
@@ -144,4 +144,4 @@ function AddPromotion() {
     );
 }
 
-export default AddPromotion;
+export default AddPromotionManager;

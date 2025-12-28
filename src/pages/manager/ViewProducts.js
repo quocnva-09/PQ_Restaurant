@@ -1,10 +1,10 @@
 import React, {useState} from 'react'
 import { myAssets } from '../../assets/assets';
 import { useNavigate } from 'react-router-dom';
-import ProductList from './ProductList';
+import ProductListManager from '../manager/ProductList';
 
 
-function ViewProducts() {
+function ViewProductsManager() {
 
   const navigate=useNavigate();
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -33,7 +33,7 @@ function ViewProducts() {
       </div>
       {/* Product List Section */}
       <div>
-        <ProductList 
+        <ProductListManager
             searchKeyword={searchKeyword}     
         />
         </div>
@@ -42,4 +42,4 @@ function ViewProducts() {
   )
 }
 
-export default ViewProducts
+export default ViewProductsManager

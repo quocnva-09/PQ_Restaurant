@@ -37,7 +37,7 @@ const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('vi-VN');
 };
 
-function OrderDetail() {
+function OrderDetailManager() {
 
   const { orderId } = useParams(); 
   const { formatCurrency, navigate } = useUserContext();
@@ -308,4 +308,4 @@ function OrderDetail() {
   )
 }
 
-export default OrderDetail
+export default OrderDetailManager

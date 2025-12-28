@@ -27,7 +27,7 @@ const formatDobToBackend = (dob_yyyy_mm_dd) => {
     }
 };
 
-function MyProfile() {
+function MyProfileManager() {
     const navigate = useNavigate();
     const [formData, setFormData] = useState(initialFormState);
     const [loading, setLoading] = useState(true);
@@ -216,4 +216,4 @@ function MyProfile() {
     );
 }
 
-export default MyProfile;
+export default MyProfileManager;

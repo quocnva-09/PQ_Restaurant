@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
 import CouponService from '../../services/CouponService';
 
-function CouponDetail() {
+function CouponDetailManager() {
 
     const { couponCode } = useParams(); 
     const navigate = useNavigate();
@@ -254,4 +254,4 @@ function CouponDetail() {
     );
 }
 
-export default CouponDetail
+export default CouponDetailManager

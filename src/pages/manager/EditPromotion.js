@@ -18,7 +18,7 @@ const getImageUrl = (key) => {
     return myAssets[key] || '';
 };
 
-function EditPromotion() {
+function EditPromotionManager() {
     const navigate = useNavigate();
     const { promotionId } = useParams();
     const [formData, setFormData] = useState(initialFormState);
@@ -173,4 +173,4 @@ function EditPromotion() {
     );
 }
 
-export default EditPromotion;
+export default EditPromotionManager;

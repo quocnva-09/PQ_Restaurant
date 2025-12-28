@@ -46,16 +46,7 @@ const ViewReview = () => {
         if (newStatus === oldStatus) return;
 
         try {
-            // Chuẩn bị dữ liệu theo đúng ReviewRequest backend yêu cầu
-            const reviewData = {
-                rating: review.rating,
-                comment: review.comment,
-                reviewStatus: newStatus,
-                userId: review.user?.id,
-                productId: review.product?.id
-            };
-
-            await ReviewService.updateReview(review.id, reviewData);
+            await ReviewService.changeReviewStatus(review.id, newStatus);
             
             toast.success(`Đã cập nhật trạng thái thành: ${newStatus}`);
 
@@ -68,7 +59,6 @@ const ViewReview = () => {
         } catch (error) {
             console.error("Lỗi cập nhật trạng thái:", error);
             toast.error("Cập nhật thất bại!");
-            // Reset lại select box về giá trị cũ nếu lỗi (tùy chọn)
             e.target.value = oldStatus; 
         }
     };
@@ -157,14 +147,14 @@ const ViewReview = () => {
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm text-left text-gray-500">
-                            <thead className="text-xs text-gray-700 uppercase bg-gray-100 border-b">
+                            <thead className="text-xs text-white uppercase bg-solid border-b">
                                 <tr>
-                                    <th className="px-6 py-4 font-bold">ID</th>
-                                    <th className="px-6 py-4 font-bold">Sản phẩm</th>
-                                    <th className="px-6 py-4 font-bold">Người dùng</th>
-                                    <th className="px-6 py-4 font-bold">Đánh giá</th>
-                                    <th className="px-6 py-4 font-bold">Trạng thái</th>
-                                    <th className="px-6 py-4 font-bold text-center">Hành động</th>
+                                    <th className="px-6 py-4 font-bold text-[14px] md:text-[16px]">ID</th>
+                                    <th className="px-6 py-4 font-bold text-[14px] md:text-[16px]">Sản phẩm</th>
+                                    <th className="px-6 py-4 font-bold text-[14px] md:text-[16px]">Người dùng</th>
+                                    <th className="px-6 py-4 font-bold text-[14px] md:text-[16px]">Đánh giá</th>
+                                    <th className="px-6 py-4 font-bold text-[14px] md:text-[16px]">Trạng thái</th>
+                                    <th className="px-6 py-4 font-bold text-[14px] md:text-[16px] text-center">Hành động</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200">

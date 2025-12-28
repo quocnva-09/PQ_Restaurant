@@ -22,7 +22,7 @@ const getImageUrl = (key) => {
     return myAssets[key] || '';
 };
 
-function EditProduct() {
+function EditProductManager() {
     const { id } = useParams(); 
     const navigate = useNavigate();
     const [formData, setFormData] = useState(initialFormState);
@@ -300,4 +300,4 @@ function EditProduct() {
     );
 }
 
-export default EditProduct;
+export default EditProductManager;

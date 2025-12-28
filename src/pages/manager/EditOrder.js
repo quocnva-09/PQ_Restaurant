@@ -5,7 +5,7 @@ import { useUserContext } from '../../context/UserContext';
 import OrderService from '../../services/OrderSevice';
 import { myAssets } from '../../assets/assets';
 
-function EditOrder() {
+function EditOrderManager() {
     const { orderId } = useParams();
     const { navigate, formatCurrency } = useUserContext();
 
@@ -323,4 +323,4 @@ function EditOrder() {
     );
 }
 
-export default EditOrder;
+export default EditOrderManager;

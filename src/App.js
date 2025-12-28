@@ -57,6 +57,31 @@ import AddCoupon from './pages/admin/AddCoupon';
 import MyReview from './pages/MyReview';
 import ManagerRoute from './components/ManagerRoutes';
 import Reviews from './pages/Reviews';
+import BlogDetails from './pages/BlogDetails';
+import ViewBlog from './pages/admin/ViewBlog';
+import AddBlog from './pages/admin/AddBlog';
+import MyProfileManager from './pages/manager/MyProfile'
+import ViewOrderManager from './pages/manager/ViewOrder'
+import OrderDetailManager from './pages/manager/OrderDetail'
+import EditOrderManager from './pages/manager/EditOrder'
+import ViewProductsManager from './pages/manager/ViewProducts'
+import AddProductsManager from './pages/manager/AddProducts'
+import EditProductManager from './pages/manager/EditProduct'
+import ViewCategoryManager from './pages/manager/ViewCategory'
+import AddCategoryManager from './pages/manager/AddCategory'
+import EditCategoryManager from './pages/manager/EditCategory'
+import ViewPromotionManager from './pages/manager/ViewPromotion'
+import AddPromotionManager from './pages/manager/AddPromotion'
+import EditPromotionManager from './pages/manager/EditPromotion'
+import ViewCouponManager from './pages/manager/ViewCoupon'
+import AddCouponManager from './pages/manager/AddCoupon'
+import CouponDetailManager from './pages/manager/CouponDetail'
+import EditCouponManager from './pages/manager/EditCoupon'
+import ViewReviewManager from './pages/manager/ViewReview'
+import ViewBlogManager from './pages/manager/ViewBlog'
+import AddBlogManager from './pages/manager/AddBlog';
+import EditBlog from './pages/admin/EditBlog';
+import EditBlogManager from './pages/manager/EditBlog';
 
 const MainLayout = ({ children }) => {
   return (
@@ -96,7 +121,8 @@ function App() {
         {/* Public routes with Header and Footer */}
         <Route path='/' element={<MainLayout><Home /></MainLayout>} />
         <Route path='/menu' element={<MainLayout><Menu /></MainLayout>} />
-        <Route path='/blog' element={<MainLayout><Blog /></MainLayout>} />
+        <Route path='/blogs' element={<MainLayout><Blog /></MainLayout>} />
+        <Route path='/blogs/:slug' element={<MainLayout><BlogDetails /></MainLayout>} />
         <Route path='/contact' element={<MainLayout><Contact /></MainLayout>} />
         <Route path='/login' element={<MainLayout><Login /></MainLayout>} />
         <Route path='/signup' element={<MainLayout><Signup /></MainLayout>} />
@@ -139,8 +165,9 @@ function App() {
               <Route path='coupon-detail/:couponCode' element={<CouponDetail />} />
               <Route path='edit-coupon/:couponCode' element={<EditCoupon />} />
               <Route path='list-review' element={<ViewReview />} />
-              <Route path='list-comment' element={<ViewProducts />} />
-              <Route path='list-blog' element={<ViewProducts />} />
+              <Route path='list-blog' element={<ViewBlog />} />
+              <Route path='add-blog' element={<AddBlog />} />
+              <Route path='edit-blog/:id' element={<EditBlog />} />
           </Route>
           <Route path="login" element={<MainLayout><Login /></MainLayout>} />
         </Route>
@@ -155,26 +182,27 @@ function App() {
               </ProtectedManagerRoute>
             }>
             <Route index element={<ViewOrder />} />
-              <Route path='my-profile' element={<MyProfile />} />
-              <Route path='list-order' element={<ViewOrder />} />
-              <Route path='order-detail/:orderId' element={<OrderDetail />} />
-              <Route path='edit-order/:orderId' element={<EditOrder />} />
-              <Route path='list-product' element={<ViewProducts />} />
-              <Route path='add-product' element={<AddProducts />} />
-              <Route path='edit-product/:id' element={<EditProduct />} />
-              <Route path='list-category' element={<ViewCategory />} />
-              <Route path='add-category' element={<AddCategory />} />
-              <Route path='edit-category/:categoryId' element={<EditCategory />} />
-              <Route path='list-promotion' element={<ViewPromotion />} />
-              <Route path='add-promotion' element={<AddPromotion />} />
-              <Route path='edit-promotion/:promotionId' element={<EditPromotion />} />
-              <Route path='list-coupon' element={<ViewCoupon />} />
-              <Route path='add-coupon' element={<AddCoupon />} />
-              <Route path='coupon-detail/:couponCode' element={<CouponDetail />} />
-              <Route path='edit-coupon/:couponCode' element={<EditCoupon />} />
-              <Route path='list-review' element={<ViewReview />} />
-              <Route path='list-comment' element={<ViewProducts />} />
-              <Route path='list-blog' element={<ViewProducts />} />
+              <Route path='my-profile' element={<MyProfileManager />} />
+              <Route path='list-order' element={<ViewOrderManager />} />
+              <Route path='order-detail/:orderId' element={<OrderDetailManager />} />
+              <Route path='edit-order/:orderId' element={<EditOrderManager />} />
+              <Route path='list-product' element={<ViewProductsManager />} />
+              <Route path='add-product' element={<AddProductsManager />} />
+              <Route path='edit-product/:id' element={<EditProductManager />} />
+              <Route path='list-category' element={<ViewCategoryManager />} />
+              <Route path='add-category' element={<AddCategoryManager />} />
+              <Route path='edit-category/:categoryId' element={<EditCategoryManager />} />
+              <Route path='list-promotion' element={<ViewPromotionManager />} />
+              <Route path='add-promotion' element={<AddPromotionManager />} />
+              <Route path='edit-promotion/:promotionId' element={<EditPromotionManager />} />
+              <Route path='list-coupon' element={<ViewCouponManager />} />
+              <Route path='add-coupon' element={<AddCouponManager />} />
+              <Route path='coupon-detail/:couponCode' element={<CouponDetailManager />} />
+              <Route path='edit-coupon/:couponCode' element={<EditCouponManager />} />
+              <Route path='list-review' element={<ViewReviewManager />} />
+              <Route path='list-blog' element={<ViewBlogManager />} />
+              <Route path='add-blog' element={<AddBlogManager />} />
+              <Route path='edit-blog/:id' element={<EditBlogManager />} />
           </Route>
           <Route path="login" element={<MainLayout><Login /></MainLayout>} />
         </Route>

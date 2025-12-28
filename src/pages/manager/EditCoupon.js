@@ -18,7 +18,7 @@ const OPERATORS = [
     { value: '=', label: 'Bằng (=)' },
 ];
 
-function EditCoupon() {
+function EditCouponManager() {
 
     const { couponCode } = useParams(); 
     const navigate = useNavigate();
@@ -382,4 +382,4 @@ function EditCoupon() {
     );
 }
 
-export default EditCoupon
+export default EditCouponManager

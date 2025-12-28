@@ -1,4 +1,3 @@
-// src/components/AddProduct.jsx (Chỉnh sửa)
 import React, { useState, useEffect } from 'react';
 import ProductService from '../../services/ProductService';
 import CategoryService from '../../services/CategoryService';
@@ -16,7 +15,7 @@ const initialFormState = {
     prices: [{ size: "", price: "" }], 
 };
 
-function AddProduct() {
+function AddProductManager() {
     const navigate = useNavigate();
     const [formData, setFormData] = useState(initialFormState);
     const [categories, setCategories] = useState([]);
@@ -264,4 +263,4 @@ function AddProduct() {
     );
 }
 
-export default AddProduct;
+export default AddProductManager;

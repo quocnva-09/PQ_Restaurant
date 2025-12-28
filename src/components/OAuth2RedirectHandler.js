@@ -22,7 +22,7 @@ const OAuth2RedirectHandler = () => {
             setAccessToken(token); 
         }
         toast.success("Đăng nhập bằng google thành công");
-        
+        window.location.reload();
         navigate('/'); 
     } else {
         alert("Đăng nhập thất bại, không tìm thấy token");

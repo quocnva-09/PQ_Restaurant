@@ -1,4 +1,4 @@
-import api from './api';
+import api from '../api/api';  
 
 const BlogService = {
     
@@ -72,7 +72,16 @@ const BlogService = {
             console.error(`Error deleting blog ${id}:`, error);
             throw error;
         }
-    }
+    },
+    getBlogById: async (id) => {
+        try {
+            const response = await api.get(`/admin/blogs/${id}`);
+            return response.data.result;
+        } catch (error) {
+            console.error(`Lỗi khi lấy chi tiết blog ID ${id}:`, error);
+            throw error;
+        }
+    },
 };
 
 export default BlogService;

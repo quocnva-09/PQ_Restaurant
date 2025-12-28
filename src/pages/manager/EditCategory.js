@@ -11,7 +11,7 @@ const initialFormState = {
     parentCategory: '',
 };
 
-function EditCategory() {
+function EditCategoryManager() {
     const { categoryId } = useParams();
     const navigate = useNavigate();
     const [formData, setFormData] = useState(initialFormState);
@@ -162,4 +162,4 @@ function EditCategory() {
     );
 }
 
-export default EditCategory;
+export default EditCategoryManager;

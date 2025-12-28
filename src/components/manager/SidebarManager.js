@@ -40,11 +40,6 @@ function SidebarManager() {
       icon: myAssets.list,
     },
     {
-      path:"/manager/list-comment",
-      label:"List Comment",
-      icon: myAssets.list,
-    },
-    {
       path:"/manager/list-blog",
       label:"List Blog",
       icon: myAssets.list,
