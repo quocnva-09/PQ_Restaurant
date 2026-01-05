@@ -146,8 +146,20 @@ import details from './details.png'
 import manager from './manager.png'
 import user_male from './user_male.gif'
 import user_female from './user_female.gif'
+import product from './product.gif'
+import category from './category.png'
+import promotionAva from './promotion.png'
+import coupon from './coupon.png'
+import review from './review.png'
+import blog from './blog.png'
 
 export const myAssets = {
+    product,
+    category,
+    promotionAva,
+    coupon,
+    review,
+    blog,
     manager,
     user_male,
     user_female,

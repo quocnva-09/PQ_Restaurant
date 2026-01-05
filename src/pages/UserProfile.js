@@ -86,8 +86,6 @@ function UserProfile() {
         // 2. Chuẩn bị UserUpdateRequest
         const dobBackendFormat = formatDobToBackend(formData.dob);
 
-        // Tạo UserUpdateRequest (chỉ cần các trường cập nhật)
-        // Chúng ta không gửi username và password qua đây.
         const userUpdateRequest = {
             email: formData.email,
             fullName: formData.fullName,
@@ -95,7 +93,7 @@ function UserProfile() {
             dob: dobBackendFormat, 
             gender: formData.gender,
             role: "USER",
-            password: newPassword ? newPassword : formData.password , // Chỉ gửi nếu có thay đổi
+            password: newPassword ? newPassword : null , // Chỉ gửi nếu có thay đổi
         };
 
 
@@ -118,7 +116,7 @@ function UserProfile() {
     if (loading) return <div className='p-6'>Đang tải dữ liệu người dùng...</div>;
 
     return (
-        <div className=' pb-8 m-1 flex flex-col w-full px-10 lg:px-12 justify-between items-center py-16 pt-28 bg-gradient-to-br from-slate-50 to-primary shadow rounded-xl min-h-screen'>
+        <div className=' pb-8 m-1 flex flex-col w-full px-10 lg:px-12 justify-between items-center py-16 pt-28 bg-gradient-to-br from-slate-50 to-primary shadow rounded-xl '>
             <Title 
                 title1={"My"}
                 title2={"Profile"}

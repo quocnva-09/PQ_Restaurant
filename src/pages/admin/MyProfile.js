@@ -75,9 +75,8 @@ function MyProfile() {
         setLoading(true);
 
         // 1. Kiểm tra Mật khẩu
-        const newPassword = formData.password;
-        if (newPassword) {
-            if (newPassword.length > 0 && newPassword.length < 8) {
+        if (formData.password) {
+            if (formData.password.length > 0 && formData.password.length < 8) {
                 toast.error("Mật khẩu mới phải có tối thiểu 8 ký tự.");
                 setLoading(false);
                 return;
@@ -87,8 +86,6 @@ function MyProfile() {
         // 2. Chuẩn bị UserUpdateRequest
         const dobBackendFormat = formatDobToBackend(formData.dob);
 
-        // Tạo UserUpdateRequest (chỉ cần các trường cập nhật)
-        // Chúng ta không gửi username và password qua đây.
         const userUpdateRequest = {
             email: formData.email,
             fullName: formData.fullName,
@@ -96,7 +93,7 @@ function MyProfile() {
             dob: dobBackendFormat, 
             gender: formData.gender,
             role: formData.role,
-            password: newPassword
+            password: formData.password ? formData.password : null,
         };
 
 

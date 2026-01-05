@@ -77,9 +77,8 @@ function EditUser() {
         setLoading(true);
 
         // Kiểm tra Mật khẩu
-        const newPassword = formData.password;
-        if (newPassword) {
-            if (newPassword.length > 0 && newPassword.length < 8) {
+        if (formData.password) {
+            if (formData.password.length > 0 && formData.password.length < 8) {
                 toast.error("Mật khẩu mới phải có tối thiểu 8 ký tự.");
                 setLoading(false);
                 return;
@@ -96,7 +95,7 @@ function EditUser() {
             dob: dobBackendFormat, 
             gender: formData.gender,
             role: formData.role,
-            password: newPassword ? newPassword : formData.password , // Chỉ gửi nếu có thay đổi
+            password: formData.password ? formData.password : null, // Chỉ gửi nếu có thay đổi
         };
 
         try {
