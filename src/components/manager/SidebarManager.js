@@ -55,11 +55,11 @@ function SidebarManager() {
 
 
   return (
-    <div >
+    <div className='min-h-screen w-full'>
       <div className='mx-auto max-w-[1440px] flex flex-col md:flex-row bg-white'>
 
         {/* Mobile Navbar */}
-        <div className='md:hidden w-full bg-slate-50 shadow-xl rounded-b-xl'>
+        <div className='md:hidden sticky top-0 z-50 w-full bg-slate-50 shadow-xl rounded-b-xl'>
           
           {/* Logo và User Info */}
 
@@ -79,7 +79,7 @@ function SidebarManager() {
           </div>
 
           {/* Menu Ngang */}
-          <div className='flex overflow-x-auto gap-x-1 p-2'>
+          <div className='flex overflow-x-auto gap-x-1 p-2 no-scrollbar'>
             {navItems.map((link) => (
               <NavLink
                 key={link.label}
@@ -97,11 +97,11 @@ function SidebarManager() {
           </div>
         </div>
 
-        {/* Full Screen */}
-        <div className='hidden md:flex flex-col bg-slate-50 sm:m-3 md:min-w-[20%] md:min-h-[97vh] rounded-xl shadow'>
+        {/* Full Screen Desktop Navbar */}
+        <div className='hidden md:flex flex-col sticky top-0 bg-slate-50 sm:m-3 md:w-[20%] md:min-w-[250px] rounded-xl shadow'>
           {/* Logo */}
           <div className='flex flex-col'>
-              <div className='flex flex-1 p-3 lg:pl-12'>
+              <div className='flex flex-1 p-3 lg:pl-12 mt-3'>
                 <Link to={'/'} className='flex items-end'>
                   <img src={myAssets.logo} alt="logoImg" className='h-12'/>
                   <div className='h-12'>

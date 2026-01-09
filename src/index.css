@@ -151,3 +151,12 @@ a{
 .prose p { margin-bottom: 1em; line-height: 1.7; }
 .prose ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 1em; }
 .prose img { border-radius: 0.5rem; margin: 1.5em 0; width: 100%; }
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+/* Ẩn scrollbar cho IE, Edge and Firefox */
+.no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}

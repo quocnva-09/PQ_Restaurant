@@ -272,7 +272,7 @@ function Dashboard() {
   const pieOptions = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } };
 
   return (
-    <div className='md:px-8 py-6 xl:py-8 m-1 sm:m-3 h-[97vh] overflow-y-scroll w-full lg:w-11/12 bg-slate-50 shadow rounded-xl'>
+    <div className='md:px-8 py-6 xl:py-8 m-1 sm:m-3 h-[97vh] overflow-y-scroll w-full lg:w-11/12 bg-slate-50 shadow rounded-xl no-scrollbar'>
       
       <div className='flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4'>
         <h2 className='text-xl font-bold text-gray-800'>Tổng quan</h2>

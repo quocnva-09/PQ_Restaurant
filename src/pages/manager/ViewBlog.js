@@ -88,16 +88,15 @@ const ViewBlogManager = () => {
     if (loading) return <div className="p-10 text-center">Đang tải dữ liệu...</div>;
 
     return (
-        <div className="p-6 bg-slate-50 min-h-screen w-full">
+        <div className="md:px-8 py-6 xl:py-8 m-1 sm:m-3 h-[97vh] overflow-y-scroll w-full lg:w-11/12 bg-slate-50 shadow rounded-xl no-scrollbar">
             <div className="max-w-7xl mx-auto">
                 
-                {/* --- HEADER SÁNG SỦA --- */}
                 <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
                     <div>
                         <h2 className="text-3xl font-bold text-gray-800 tracking-tight">Quản Lý Blog</h2>
                     </div>
 
-                    {/* NÚT THÊM MỚI: MÀU XANH DƯƠNG SÁNG + BÓNG ĐỔ */}
+                    {/* NÚT THÊM MỚI:*/}
                     <Link 
                         to="/manager/add-blog" 
                         className="flex items-center gap-2 bg-primary text-black px-6 py-3 rounded-xl transition-all shadow-lg font-semibold transform hover:-translate-y-0.5"
@@ -106,11 +105,9 @@ const ViewBlogManager = () => {
                     </Link>
                 </div>
 
-                {/* --- TABLE CONTAINER: TRẮNG TINH + SHADOW --- */}
                 <div className="bg-white rounded-2xl shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm text-left">
-                            {/* HEADER TABLE: XANH NHẠT */}
                             <thead className="text-xs text-white uppercase bg-solid border-b border-blue-100">
                                 <tr>
                                     <th className="px-6 py-5 font-bold text-[14px] md:text-[16px] w-16 text-center">ID</th>
@@ -170,7 +167,7 @@ const ViewBlogManager = () => {
                                                         {blog.status === 'PUBLISHED' ? <FaTimesCircle /> : <FaCheckCircle />}
                                                     </button>
 
-                                                    {/* Nút Edit: Màu cam nhạt hoặc xanh */}
+                                                    {/* Nút Edit */}
                                                     <Link 
                                                         to={`/manager/edit-blog/${blog.id}`} 
                                                         className="p-2 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 border border-indigo-100 transition shadow-sm"
@@ -179,7 +176,7 @@ const ViewBlogManager = () => {
                                                         <FaEdit />
                                                     </Link>
 
-                                                    {/* Nút Xóa: Màu đỏ nhạt */}
+                                                    {/* Nút Xóa */}
                                                     <button 
                                                         onClick={() => handleDelete(blog.id)}
                                                         className="p-2 bg-white border border-gray-200 text-gray-400 hover:bg-red-50 hover:text-red-600 hover:border-red-100 rounded-lg transition shadow-sm"
@@ -205,7 +202,7 @@ const ViewBlogManager = () => {
                         </table>
                     </div>
                     
-                    {/* FOOTER & PAGINATION */}
+                    {/* PAGINATION */}
                     {blogs.length > itemsPerPage && (
                          <div className="bg-white border-t border-gray-100 p-4 flex justify-end">
                             <div className="flex gap-2">

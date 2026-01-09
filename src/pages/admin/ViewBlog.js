@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import BlogService from '../../services/BlogService'; 
 import { toast } from 'react-toastify';
-import { FaEdit, FaTrash, FaEye, FaCheckCircle, FaTimesCircle, FaPlus } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaEye, FaCheckCircle, FaTimesCircle, FaPlus, FaCalendarAlt, FaUser } from 'react-icons/fa';
 
 const ViewBlog = () => {
     // --- State ---
@@ -11,7 +11,7 @@ const ViewBlog = () => {
     
     // Pagination State
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(10);
+    const [itemsPerPage] = useState(5);
 
     // --- Fetch Data ---
     useEffect(() => {
@@ -20,9 +20,7 @@ const ViewBlog = () => {
 
     const fetchBlogs = async () => {
         try {
-
             const data = await BlogService.getAllBlogs();
-
             const sortedData = Array.isArray(data) ? [...data].sort((a, b) => b.id - a.id) : [];
             setBlogs(sortedData);
         } catch (error) {
@@ -34,7 +32,6 @@ const ViewBlog = () => {
     };
 
     // --- Actions ---
-
     const handleDelete = async (id) => {
         if (window.confirm("Bạn có chắc chắn muốn xóa bài viết này? Hành động này không thể hoàn tác.")) {
             try {
@@ -49,7 +46,6 @@ const ViewBlog = () => {
     };
 
     const handlePublishToggle = async (id, currentStatus) => {
-
         try {
             await BlogService.publishBlog(id);
             toast.success("Đã xuất bản bài viết!");
@@ -61,14 +57,14 @@ const ViewBlog = () => {
     };
 
     const formatDate = (dateString) => {
-        if (!dateString) return <span className="text-gray-400 italic">Chưa xuất bản</span>;
+        if (!dateString) return <span className="text-gray-400 italic">Chưa hiện</span>;
         return new Date(dateString).toLocaleDateString('vi-VN');
     };
 
     const getStatusBadge = (status) => {
         switch (status) {
             case 'PUBLISHED':
-                return <span className="px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold border border-green-200">Đã xuất bản</span>;
+                return <span className="px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold border border-green-200">Đã hiện</span>;
             case 'DRAFT':
                 return <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-600 text-xs font-bold border border-gray-200">Bản nháp</span>;
             case 'HIDDEN':
@@ -88,29 +84,77 @@ const ViewBlog = () => {
     if (loading) return <div className="p-10 text-center">Đang tải dữ liệu...</div>;
 
     return (
-        <div className="p-6 bg-slate-50 min-h-screen w-full">
+        <div className="md:px-8 py-6 xl:py-8 m-1 sm:m-3 h-[97vh] overflow-y-scroll w-full lg:w-11/12 bg-slate-50 shadow rounded-xl no-scrollbar">
             <div className="max-w-7xl mx-auto">
                 
-                {/* --- HEADER SÁNG SỦA --- */}
-                <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-                    <div>
-                        <h2 className="text-3xl font-bold text-gray-800 tracking-tight">Quản Lý Blog</h2>
+                {/* --- HEADER --- */}
+                <div className="flex flex-col md:flex-row justify-between items-center mb-6 md:mb-8 gap-4">
+                    <div className="text-center md:text-left">
+                        <h2 className="text-2xl md:text-3xl font-bold text-gray-800 tracking-tight">Quản Lý Blog</h2>
                     </div>
 
-                    {/* NÚT THÊM MỚI: MÀU XANH DƯƠNG SÁNG + BÓNG ĐỔ */}
                     <Link 
                         to="/admin/add-blog" 
-                        className="flex items-center gap-2 bg-primary text-black px-6 py-3 rounded-xl transition-all shadow-lg font-semibold transform hover:-translate-y-0.5"
+                        className="w-full md:w-auto flex justify-center items-center gap-2 bg-primary text-black px-6 py-3 rounded-xl transition-all shadow-lg font-semibold transform hover:-translate-y-0.5"
                     >
                         <FaPlus className="text-sm"/> <span>Viết bài mới</span>
                     </Link>
                 </div>
 
-                {/* --- TABLE CONTAINER: TRẮNG TINH + SHADOW --- */}
-                <div className="bg-white rounded-2xl shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden">
+                <div className="block md:hidden space-y-4">
+                    {currentBlogs.length > 0 ? (
+                        currentBlogs.map((blog) => (
+                            <div key={blog.id} className="bg-white p-4 rounded-xl shadow-md border border-gray-100 flex flex-col gap-3">
+                                <div className="flex justify-between items-start">
+                                    <span className="text-xs font-bold text-gray-400">#{blog.id}</span>
+                                    {getStatusBadge(blog.status)}
+                                </div>
+                                
+                                <div>
+                                    <h3 className="font-bold text-gray-800 text-lg line-clamp-2">{blog.title}</h3>
+                                    <p className="text-xs text-gray-400 mt-1 font-mono bg-primary inline-block px-1 rounded">/{blog.slug}</p>
+                                </div>
+
+                                <div className="flex items-center justify-between text-sm text-gray-500 border-t border-b border-gray-50 py-2">
+                                    <div className="flex items-center gap-1">
+                                        <FaCalendarAlt className="text-gray-400"/> {formatDate(blog.publishedAt)}
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                        <FaEye className="text-blue-400"/> {blog.viewCount?.toLocaleString() || 0}
+                                    </div>
+                                </div>
+
+                                <div className="flex justify-between items-center mt-1">
+                                    <div className="flex items-center gap-2 text-sm font-semibold text-blue-600">
+                                        <FaUser className="text-xs"/> {blog.authorName}
+                                    </div>
+                                    
+                                    {/* Action Buttons Mobile */}
+                                    <div className="flex gap-2">
+                                        <button 
+                                            onClick={() => handlePublishToggle(blog.id, blog.status)}
+                                            className={`p-2 rounded-lg ${blog.status === 'PUBLISHED' ? 'bg-gray-100 text-gray-500' : 'bg-green-100 text-green-600'}`}
+                                        >
+                                            {blog.status === 'PUBLISHED' ? <FaTimesCircle /> : <FaCheckCircle />}
+                                        </button>
+                                        <Link to={`/admin/edit-blog/${blog.id}`} className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
+                                            <FaEdit />
+                                        </Link>
+                                        <button onClick={() => handleDelete(blog.id)} className="p-2 bg-red-50 text-red-600 rounded-lg">
+                                            <FaTrash />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <div className="text-center p-8 bg-white rounded-xl shadow">Chưa có bài viết nào.</div>
+                    )}
+                </div>
+
+                <div className="hidden md:block bg-white rounded-2xl shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm text-left">
-                            {/* HEADER TABLE: XANH NHẠT */}
                             <thead className="text-xs text-white uppercase bg-solid border-b border-blue-100">
                                 <tr>
                                     <th className="px-6 py-5 font-bold w-16 text-center">ID</th>
@@ -133,7 +177,7 @@ const ViewBlog = () => {
                                                     {blog.title}
                                                 </div>
                                                 <div className="flex items-center gap-2">
-                                                    <span className="text-[10px] text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded font-mono border">
+                                                    <span className="text-[10px] text-gray-400 bg-primary px-1.5 py-0.5 rounded font-mono border">
                                                         /{blog.slug}
                                                     </span>
                                                     <span className="text-xs text-gray-400">• {formatDate(blog.publishedAt)}</span>
@@ -149,15 +193,12 @@ const ViewBlog = () => {
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="text-blue-600 flex items-center justify-center font-bold text-sm">
-                                                        {blog.authorName}
-                                                    </div>
+                                                <div className="text-blue-600 flex items-center justify-center font-bold text-sm">
+                                                    {blog.authorName}
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 text-center">
                                                 <div className="flex items-center justify-center gap-2 opacity-80 group-hover:opacity-100 transition-opacity">
-                                                    {/* Nút Toggle Status */}
                                                     <button 
                                                         onClick={() => handlePublishToggle(blog.id, blog.status)}
                                                         title={blog.status === 'PUBLISHED' ? "Ẩn bài" : "Xuất bản"}
@@ -169,8 +210,6 @@ const ViewBlog = () => {
                                                     >
                                                         {blog.status === 'PUBLISHED' ? <FaTimesCircle /> : <FaCheckCircle />}
                                                     </button>
-
-                                                    {/* Nút Edit: Màu cam nhạt hoặc xanh */}
                                                     <Link 
                                                         to={`/admin/edit-blog/${blog.id}`} 
                                                         className="p-2 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 border border-indigo-100 transition shadow-sm"
@@ -178,8 +217,6 @@ const ViewBlog = () => {
                                                     >
                                                         <FaEdit />
                                                     </Link>
-
-                                                    {/* Nút Xóa: Màu đỏ nhạt */}
                                                     <button 
                                                         onClick={() => handleDelete(blog.id)}
                                                         className="p-2 bg-white border border-gray-200 text-gray-400 hover:bg-red-50 hover:text-red-600 hover:border-red-100 rounded-lg transition shadow-sm"
@@ -204,42 +241,42 @@ const ViewBlog = () => {
                             </tbody>
                         </table>
                     </div>
-                    
-                    {/* FOOTER & PAGINATION */}
-                    {blogs.length > itemsPerPage && (
-                         <div className="bg-white border-t border-gray-100 p-4 flex justify-end">
-                            <div className="flex gap-2">
-                                <button
-                                    onClick={() => paginate(currentPage - 1)}
-                                    disabled={currentPage === 1}
-                                    className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-50 transition shadow-sm"
-                                >
-                                    Trước
-                                </button>
-                                {[...Array(totalPages)].map((_, i) => (
-                                    <button
-                                        key={i}
-                                        onClick={() => paginate(i + 1)}
-                                        className={`w-9 h-9 rounded-lg border text-sm font-bold transition shadow-sm ${
-                                            currentPage === i + 1
-                                            ? 'bg-blue-600 text-white border-blue-600 shadow-blue-200'
-                                            : 'bg-white text-gray-600 border-gray-200 hover:bg-blue-50 hover:text-blue-600'
-                                        }`}
-                                    >
-                                        {i + 1}
-                                    </button>
-                                ))}
-                                <button
-                                    onClick={() => paginate(currentPage + 1)}
-                                    disabled={currentPage === totalPages}
-                                    className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-50 transition shadow-sm"
-                                >
-                                    Sau
-                                </button>
-                            </div>
-                        </div>
-                    )}
                 </div>
+                    
+                {/* --- PAGINATION --- */}
+                {blogs.length > itemsPerPage && (
+                     <div className="mt-4 md:mt-0 md:bg-white md:border-t md:border-gray-100 p-4 flex justify-center md:justify-end rounded-xl md:rounded-t-none shadow-sm md:shadow-none">
+                        <div className="flex flex-wrap justify-center gap-2">
+                            <button
+                                onClick={() => paginate(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                className="px-3 py-2 md:px-4 md:py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-50 transition shadow-sm"
+                            >
+                                Trước
+                            </button>
+                            {[...Array(totalPages)].map((_, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => paginate(i + 1)}
+                                    className={`w-9 h-9 md:w-9 md:h-9 rounded-lg border text-sm font-bold transition shadow-sm ${
+                                        currentPage === i + 1
+                                        ? 'bg-blue-600 text-white border-blue-600 shadow-blue-200'
+                                        : 'bg-white text-gray-600 border-gray-200 hover:bg-blue-50 hover:text-blue-600'
+                                    }`}
+                                >
+                                    {i + 1}
+                                </button>
+                            ))}
+                            <button
+                                onClick={() => paginate(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                                className="px-3 py-2 md:px-4 md:py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-50 transition shadow-sm"
+                            >
+                                Sau
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

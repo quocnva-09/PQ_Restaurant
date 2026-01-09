@@ -137,7 +137,7 @@ const ViewReviewManager = () => {
     if (loading) return <div className="p-8 text-center text-gray-500">Đang tải dữ liệu...</div>;
 
     return (
-        <div className="md:px-8 py-6 xl:py-8 m-1 sm:m-3 h-[97vh] overflow-y-scroll w-full lg:w-11/12 bg-slate-50 shadow rounded-xl">
+        <div className="md:px-8 py-6 xl:py-8 m-1 sm:m-3 h-[97vh] overflow-y-scroll w-full lg:w-11/12 bg-slate-50 shadow rounded-xl no-scrollbar">
             <div className="max-w-7xl mx-auto">
                 <h2 className="text-2xl font-bold text-gray-800 mb-6">Quản lý Đánh Giá</h2>
                 
