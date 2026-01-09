@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import Title from '../components/Title';
-// Giả sử bạn import ReviewService từ đường dẫn tương ứng
+import { useUserContext } from '../context/UserContext'
 import ReviewService from '../services/ReviewService'; 
 import { myAssets } from '../assets/assets';
 import { toast } from 'react-toastify';
 
 const MyReviews = () => {
+  const {navigate}=useUserContext();
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState(null); 
@@ -136,6 +137,7 @@ const MyReviews = () => {
                     <img 
                     src={myAssets[review.product.productImage]} 
                     alt={review.product.name} 
+                    onClick={()=>{navigate(`/product-details/${review.product.id}`)}}
                     className='w-full h-full object-contain group-hover:scale-110 transition-transform duration-500 ease-in-out'
                     />
                 </div>
@@ -143,8 +145,11 @@ const MyReviews = () => {
                 {/* Nội dung đánh giá */}
                 <div className='flex-1 min-w-0'> 
                     <div className='flex justify-between items-start'>
-                        <h4 className='font-bold text-gray-800 line-clamp-1 text-lg mb-1 group-hover:text-blue-600 transition-colors cursor-pointer'>
-                            {review.product.name}
+                        <h4 
+                        onClick={()=>{navigate(`/product-details/${review.product.id}`)}}
+                        className='font-bold text-gray-800 line-clamp-1 text-lg mb-1 
+                        group-hover:text-blue-600 transition-colors cursor-pointer'>
+                        {review.product.name}
                         </h4>
                     </div>
 

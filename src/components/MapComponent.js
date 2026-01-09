@@ -1,9 +1,7 @@
 import React, { useCallback, useRef, useEffect } from 'react';
 import {
-    APIProvider,
     Map,
-    AdvancedMarker,
-    Pin,
+    Marker,
     useMap
 } from '@vis.gl/react-google-maps';
 
@@ -68,20 +66,20 @@ function MapComponent({ position, onMarkerUpdate, zoom, shouldPan, onAutoPanComp
 
     return (
         <Map
+            defaultCenter={position}
             center={position}
             zoom={typeof zoom === 'number' ? zoom : 13}
             style={{ width: '100%', height: '450px', borderRadius: '8px' }}
             onClick={handleMapClick} // Xử lý click để chọn vị trí
+            mapId={null}
+            gestureHandling={'greedy'} // Giúp thao tác trên mobile mượt hơn
         >
-            <AdvancedMarker
+            <Marker 
                 position={position}
-                draggable={true} // Cho phép kéo thả
-                onDragEnd={handleMarkerDragEnd} // Xử lý khi kéo thả xong
+                draggable={true}
+                onDragEnd={handleMarkerDragEnd}
                 title="Vị trí giao hàng"
-            >
-                {/* Dùng Pin component để hiển thị Marker đẹp hơn */}
-                <Pin background={'#DB2777'} borderColor={'#831843'} glyphColor={'#FFF'} />
-            </AdvancedMarker>
+            />
         </Map>
     );
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
+import useLogout from '../hooks/useLogout';
 import { myAssets } from "../assets/assets";
 import UserService from '../services/UserService';
 import { toast } from 'react-toastify';
@@ -9,7 +10,8 @@ const UserButton = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-    const { username, logout } = useAuth();
+    const { username } = useAuth();
+    const { performLogout} = useLogout();
     const [gender, setGender] = useState('');
 
     const fetchUserData = async () => {
@@ -39,16 +41,7 @@ const UserButton = () => {
     const confirmLogout = async () => {
         setShowLogoutConfirm(false); 
         setLoading(true);
-        try {
-          logout();
-          window.location.reload();
-          setTimeout(() => navigate('/login'), 1000);
-        } catch (error) {
-          console.error('Logout error:', error);
-          setTimeout(() => navigate('/login'), 1000);
-        } finally {
-          setLoading(false);
-        }
+        await performLogout();
       };
 
     const cancelLogout = () => {

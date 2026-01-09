@@ -321,10 +321,10 @@ function Dashboard() {
           
           {/* Card Product */}
           <div className='flexStart gap-5 p-5 bg-[#fff4d2] rounded-xl border-b-4 border-orange-500'>
-            <img src={myAssets.product} alt="" className="hidden sm:flex w-8" />
+            <img src={myAssets.shopeefood} alt="" className="hidden sm:flex w-8" />
              <div className='flex flex-col'>
                 <h4 className='font-bold text-2xl'>{summaryCounts.products}</h4>
-                <h5 className='text-orange-600 text-sm font-semibold'>Tổng Sản phẩm</h5>
+                <h5 className='text-orange-600 text-sm font-semibold'>Tổng số món ăn</h5>
              </div>
           </div>
 
@@ -381,7 +381,7 @@ function Dashboard() {
       {/* --- CÁC THẺ THỐNG KÊ DOANH THU  --- */}
       <div className='grid grid-cols-1 md:grid-cols-3 gap-4 mb-8'>
          <div className='flexStart gap-7 p-5 bg-[#fff4d2] lg:min-w-56 rounded-xl border-b-4 border-blue-500'>
-           <img src={myAssets.dollar} alt="" className="hidden sm:flex w-8" />
+           <img src={myAssets.graph} alt="" className="hidden sm:flex w-8" />
            <div>
              <h4 className='font-bold text-lg'>{loading ? "..." : formatCurrency(stats.totalRevenue)}</h4>
              <h5 className='text-blue-500 text-sm'>Doanh số</h5>
@@ -409,10 +409,10 @@ function Dashboard() {
           </div>
         </div>
         <div className='flexStart gap-7 p-5 bg-[#fff4d2] lg:min-w-56 rounded-xl border-b-4 border-green-500'>
-          <img src={myAssets.graph} alt="" className="hidden sm:flex w-8" />
+          <img src={myAssets.product} alt="" className="hidden sm:flex w-8" />
           <div>
             <h4 className='font-bold text-lg'>{loading ? "..." : stats.totalNumberProductSale}</h4>
-            <h5 className='text-green-500 text-sm'>Tổng số lượng món ăn</h5>
+            <h5 className='text-green-500 text-sm'>Tổng số lượng món ăn đã đặt</h5>
           </div>
         </div>
         <div className='flexStart gap-7 p-5 bg-[#fff4d2] lg:min-w-56 rounded-xl border-b-4 border-red-400'>

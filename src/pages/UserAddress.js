@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
 import AddressService from '../services/AddressService'; 
 import UserService from '../services/UserService'; 
 import UserNavbar from '../components/UserNavbar'; 

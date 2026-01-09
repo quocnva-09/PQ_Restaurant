@@ -1,39 +1,34 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import useAuth from './useAuth';
 
 const useLogout = () => {
-    const navigate = useNavigate();
     const { logout } = useAuth();
     const [loading, setLoading] = useState(false);
 
-    const performLogout = async () => {
+    const performLogout = useCallback(async () => {
         setLoading(true);
         try {
             // Xóa token, user data, v.v.
-            logout();
+            await logout();
             
             // Hiển thị thông báo thành công
             toast.success("Đăng xuất thành công!");
             window.location.reload();
             
-            // Chuyển hướng về login sau 500ms
             setTimeout(() => {
-                setTimeout(() => navigate('/login'), 1000);
-            }, 500);
+                window.location.href = '/login';
+            }, 1000);
         } catch (error) {
             console.error('Logout error:', error);
             toast.error("Lỗi khi đăng xuất. Vui lòng thử lại.");
             
             // Vẫn chuyển hướng về login dù có lỗi
-            setTimeout(() => {
-                setTimeout(() => navigate('/login'), 1000);
-            }, 1500);
+            window.location.href = '/login';
         } finally {
             setLoading(false);
         }
-    };
+    }, [logout]);
 
     return { performLogout, loading };
 };

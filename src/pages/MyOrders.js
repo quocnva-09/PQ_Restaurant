@@ -163,14 +163,19 @@ const MyOrders = () => {
 
                 return (
                   <div key={idx} className='flex gap-4 items-start border-b border-gray-50 last:border-0 pb-4 last:pb-0'>
-                    <div className='w-16 h-16 bg-gray-50 rounded-lg flex-shrink-0 flex items-center justify-center p-1'>
-                        <img src={myAssets[item.product.productImage]} alt="" className='w-full h-full object-contain' />
+                    <div className='w-16 h-16 bg-slate-50 rounded-lg flex-shrink-0 flex items-center justify-center p-1'>
+                        <img 
+                        src={myAssets[item.product.productImage]} 
+                        onClick={()=>{navigate(`/product-details/${item.product.id}`)}}
+                        alt="" className='w-full h-full object-contain hover:cursor-pointer' />
                     </div>
                     
                     <div className='flex-1'>
                       <div className="flex justify-between items-start">
                           <div>
-                              <h5 className='font-bold text-gray-800 line-clamp-1'>{item.product.name}</h5>
+                              <h5 
+                              onClick={()=>{navigate(`/product-details/${item.product.id}`)}}
+                              className='font-bold text-gray-800 line-clamp-1 hover:text-blue-600 transition-colors cursor-pointer'>{item.product.name}</h5>
                               <p className='text-xs text-gray-500'>Size: {item.size} x {item.numProducts}</p>
                           </div>
                           <p className="font-semibold text-gray-800">{formatCurrency(item.price)}</p>

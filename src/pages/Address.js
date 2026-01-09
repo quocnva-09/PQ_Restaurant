@@ -251,8 +251,8 @@ function Address() {
     }
 
         return (
-        <div className='max-padd-container py-16 xl:py-28 bg-gradient-to-br from-slate-50 to-primary min-h-screen'>
-            <div className='flex flex-col xl:flex-row gap-10 xl:gap-12 items-start'>
+        <div className='max-padd-container pt-28 pb-8 bg-gradient-to-br from-slate-50 to-primary min-h-screen'>
+            <div className='flex  xl:flex-row gap-10 xl:gap-12 items-start'>
                 <div className='flex-1 flex flex-col gap-4'>
                     <Title title1={"Delivery"} title2={"Information"} titleStyles={"pb-5 items-start"} paraStyles={"hidden"} />
                     <div className="flex flex-col gap-3">

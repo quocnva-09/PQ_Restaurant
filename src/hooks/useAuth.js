@@ -81,8 +81,6 @@ export const useAuth = ()=> {
             try {
                 // Gửi yêu cầu vô hiệu hóa token lên Back-end
                 await AuthService.logout({ token: token });
-                window.location.reload();
-                toast.success("Đăng xuất thành công.");
             } catch (error) {
                 // Ignore lỗi nếu token đã hết hạn ở phía server
                 console.warn("Logout API failed (token có thể đã hết hạn), proceeding with local clear.", error);
@@ -94,9 +92,7 @@ export const useAuth = ()=> {
         localStorage.removeItem('refreshToken');
         setAccessToken(null);
         
-        // Chuyển hướng về trang đăng nhập
-        setTimeout(() => navigate('/login'), 1000); 
-    }, [navigate]);
+    }, []);
 
     //Cơ chế lắng nghe sự kiện localStorage (để đồng bộ hóa giữa các tab)
     useEffect(() => {

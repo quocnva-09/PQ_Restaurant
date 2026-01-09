@@ -152,8 +152,10 @@ import promotionAva from './promotion.png'
 import coupon from './coupon.png'
 import review from './review.png'
 import blog from './blog.png'
+import shopeefood from './shopeefood.png'
 
 export const myAssets = {
+    shopeefood,
     product,
     category,
     promotionAva,
