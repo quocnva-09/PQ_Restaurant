@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthService from '../services/AuthService';
 import { jwtDecode } from 'jwt-decode';
-import {useAuth} from '../hooks/useAuth'
-import {useAuthContext} from '../context/AuthContext'
+import { useAuth } from '../hooks/useAuth'
+import { useAuthContext } from '../context/AuthContext'
 import { toast } from 'react-toastify';
 
 
@@ -21,37 +21,60 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // ✅ Basic validation
+    if (!username || !password) {
+      setError("Vui lòng nhập đầy đủ email và mật khẩu.");
+      return;
+    }
+
     setError(null);
     setLoading(true);
 
     try {
       const response = await AuthService.login({ username, password });
-      
-      const { token, refreshToken } = response.data.result;
 
-      localStorage.setItem('accessToken', token);
-      localStorage.setItem('refreshToken', refreshToken); // Lưu Refresh Token
+      const result = response?.data?.result;
+      if (!result?.token) {
+        throw new Error("Invalid server response");
+      }
+
+      const { token, refreshToken } = result;
+
+      // ✅ Store tokens
+      localStorage.setItem("accessToken", token);
+      if (refreshToken) {
+        localStorage.setItem("refreshToken", refreshToken);
+      }
+
       setAccessToken(token);
-      toast.success('Đăng nhập success!');
+      toast.success("Đăng nhập thành công!");
 
-      const decodedToken = jwtDecode(token);
-      const userScope = decodedToken?.scope?.trim() || '';
+      // ✅ Decode safely
+      let userScope = "";
+      try {
+        const decoded = jwtDecode(token);
+        userScope = decoded?.scope?.trim() || "";
+      } catch (decodeError) {
+        console.warn("Invalid token format");
+      }
 
-      
-      // KIỂM TRA VAI TRÒ VÀ ĐIỀU HƯỚNG
+      // ✅ Navigate (no reload needed)
       if (userScope === ROLE_ADMIN_STRING) {
-        navigate('/admin');
+        navigate("/admin", { replace: true });
+      } else {
+        navigate("/", { replace: true });
       }
-      else {
-          navigate('/'); 
-      }
-      window.location.reload();
 
     } catch (err) {
-      // Xử lý lỗi đăng nhập
-      const apiError = err.response?.data?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại email và mật khẩu.';
+      const apiError =
+        err?.response?.data?.message ||
+        err.message ||
+        "Đăng nhập thất bại. Vui lòng kiểm tra lại.";
+
       setError(apiError);
-      console.error('Login Error:', err);
+      console.error("Login Error:", err);
+
     } finally {
       setLoading(false);
     }
@@ -61,12 +84,12 @@ const Login = () => {
     try {
       // Gọi API lấy URL đăng nhập Google từ Backend
       const response = await AuthService.getGoogleLoginUrl();
-      
+
       // Backend trả về: ApiResponse có result là URL
       if (response && response.result) {
-         // Chuyển hướng trình duyệt sang trang Google
-         console.log("Redirecting to Google:", response.result);
-         window.location.href = response.result;
+        // Chuyển hướng trình duyệt sang trang Google
+        console.log("Redirecting to Google:", response.result);
+        window.location.href = response.result;
       }
     } catch (error) {
       console.error("Google Login Error:", error);
@@ -80,7 +103,7 @@ const Login = () => {
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
           Đăng nhập
         </h2>
-        
+
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
@@ -110,7 +133,7 @@ const Login = () => {
               />
             </div>
           </div>
-          
+
           {error && (
             <div className="text-red-600 text-sm text-center font-medium">
               {error}
@@ -128,7 +151,7 @@ const Login = () => {
           </div>
         </form>
 
-          <div className="mt-6">
+        <div className="mt-6">
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300"></div>
@@ -171,20 +194,20 @@ const Login = () => {
         </div>
 
         <div className="text-center mt-4">
-            <Link 
-                to="/forgot-password" 
-                className="inline-block align-baseline font-bold text-sm text-blue-600 hover:text-blue-800"
-            >
-                Bạn quên mật khẩu?
-            </Link>
+          <Link
+            to="/forgot-password"
+            className="inline-block align-baseline font-bold text-sm text-blue-600 hover:text-blue-800"
+          >
+            Bạn quên mật khẩu?
+          </Link>
         </div>
 
         <div className="text-sm text-center mt-4">
           <span className="font-medium text-gray-600">
             Không có tài khoản?{' '}
           </span>
-          <Link 
-            to="/signup" 
+          <Link
+            to="/signup"
             className="font-medium text-indigo-600 hover:text-indigo-500"
           >
             Đăng ký
