@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthService from '../services/AuthService';
 import { jwtDecode } from 'jwt-decode';
-import {useAuth} from '../hooks/useAuth'
-import {useAuthContext} from '../context/AuthContext'
+import { useAuth } from '../hooks/useAuth'
+import { useAuthContext } from '../context/AuthContext'
 import { toast } from 'react-toastify';
 
 
@@ -21,37 +21,103 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // ✅ Trim inputs
+    const cleanUsername = username?.trim();
+    const cleanPassword = password?.trim();
+
+    // ✅ Client-side validation
+    if (!cleanUsername || !cleanPassword) {
+      setError("Vui lòng nhập đầy đủ email và mật khẩu.");
+      return;
+    }
+
+    if (cleanPassword.length < 6) {
+      setError("Mật khẩu phải có ít nhất 6 ký tự.");
+      return;
+    }
+
     setError(null);
     setLoading(true);
 
     try {
-      const response = await AuthService.login({ username, password });
-      
-      const { token, refreshToken } = response.data.result;
+      const response = await AuthService.login({
+        username: cleanUsername,
+        password: cleanPassword,
+      });
 
-      localStorage.setItem('accessToken', token);
-      localStorage.setItem('refreshToken', refreshToken); // Lưu Refresh Token
+      const result = response?.data?.result;
+
+      // ✅ Validate response structure
+      if (!result || typeof result !== "object") {
+        throw new Error("Malformed server response");
+      }
+
+      const { token, refreshToken } = result;
+
+      if (!token) {
+        throw new Error("Missing access token");
+      }
+
+      // ✅ Store tokens safely
+      localStorage.setItem("accessToken", token);
+      if (refreshToken) {
+        localStorage.setItem("refreshToken", refreshToken);
+      }
+
       setAccessToken(token);
-      toast.success('Đăng nhập success!');
+      toast.success("Đăng nhập thành công!");
 
-      const decodedToken = jwtDecode(token);
-      const userScope = decodedToken?.scope?.trim() || '';
+      // ✅ Decode token safely
+      let userScope = "";
 
-      
-      // KIỂM TRA VAI TRÒ VÀ ĐIỀU HƯỚNG
-      if (userScope === ROLE_ADMIN_STRING) {
-        navigate('/admin');
+      try {
+        const decoded = jwtDecode(token);
+
+        // Optional deeper validation
+        if (decoded?.exp && decoded.exp * 1000 < Date.now()) {
+          throw new Error("Token expired");
+        }
+
+        userScope = decoded?.scope?.trim() || "";
+      } catch (decodeError) {
+        console.warn("Token decode failed:", decodeError.message);
       }
-      else {
-          navigate('/'); 
-      }
-      window.location.reload();
+
+      // ✅ Role-based navigation
+      const redirectPath =
+        userScope === ROLE_ADMIN_STRING ? "/admin" : "/";
+
+      navigate(redirectPath, { replace: true });
 
     } catch (err) {
-      // Xử lý lỗi đăng nhập
-      const apiError = err.response?.data?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại email và mật khẩu.';
-      setError(apiError);
-      console.error('Login Error:', err);
+      let message = "Đăng nhập thất bại. Vui lòng thử lại.";
+
+      // ✅ Handle known API errors
+      if (err?.response) {
+        const status = err.response.status;
+
+        switch (status) {
+          case 400:
+          case 401:
+            message = "Sai tài khoản hoặc mật khẩu.";
+            break;
+          case 403:
+            message = "Bạn không có quyền truy cập.";
+            break;
+          case 500:
+            message = "Lỗi server. Vui lòng thử lại sau.";
+            break;
+          default:
+            message = err.response.data?.message || message;
+        }
+      } else if (err.message) {
+        message = err.message;
+      }
+
+      setError(message);
+      console.error("Login Error:", err);
+
     } finally {
       setLoading(false);
     }
@@ -61,12 +127,12 @@ const Login = () => {
     try {
       // Gọi API lấy URL đăng nhập Google từ Backend
       const response = await AuthService.getGoogleLoginUrl();
-      
+
       // Backend trả về: ApiResponse có result là URL
       if (response && response.result) {
-         // Chuyển hướng trình duyệt sang trang Google
-         console.log("Redirecting to Google:", response.result);
-         window.location.href = response.result;
+        // Chuyển hướng trình duyệt sang trang Google
+        console.log("Redirecting to Google:", response.result);
+        window.location.href = response.result;
       }
     } catch (error) {
       console.error("Google Login Error:", error);
@@ -80,7 +146,7 @@ const Login = () => {
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
           Đăng nhập
         </h2>
-        
+
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
@@ -110,7 +176,7 @@ const Login = () => {
               />
             </div>
           </div>
-          
+
           {error && (
             <div className="text-red-600 text-sm text-center font-medium">
               {error}
@@ -128,7 +194,7 @@ const Login = () => {
           </div>
         </form>
 
-          <div className="mt-6">
+        <div className="mt-6">
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300"></div>
@@ -171,20 +237,20 @@ const Login = () => {
         </div>
 
         <div className="text-center mt-4">
-            <Link 
-                to="/forgot-password" 
-                className="inline-block align-baseline font-bold text-sm text-blue-600 hover:text-blue-800"
-            >
-                Bạn quên mật khẩu?
-            </Link>
+          <Link
+            to="/forgot-password"
+            className="inline-block align-baseline font-bold text-sm text-blue-600 hover:text-blue-800"
+          >
+            Bạn quên mật khẩu?
+          </Link>
         </div>
 
         <div className="text-sm text-center mt-4">
           <span className="font-medium text-gray-600">
             Không có tài khoản?{' '}
           </span>
-          <Link 
-            to="/signup" 
+          <Link
+            to="/signup"
             className="font-medium text-indigo-600 hover:text-indigo-500"
           >
             Đăng ký
