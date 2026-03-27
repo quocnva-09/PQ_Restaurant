@@ -22,18 +22,9 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // ✅ Trim inputs
-    const cleanUsername = username?.trim();
-    const cleanPassword = password?.trim();
-
-    // ✅ Client-side validation
-    if (!cleanUsername || !cleanPassword) {
+    // ✅ Basic validation
+    if (!username || !password) {
       setError("Vui lòng nhập đầy đủ email và mật khẩu.");
-      return;
-    }
-
-    if (cleanPassword.length < 6) {
-      setError("Mật khẩu phải có ít nhất 6 ký tự.");
       return;
     }
 
@@ -41,25 +32,16 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await AuthService.login({
-        username: cleanUsername,
-        password: cleanPassword,
-      });
+      const response = await AuthService.login({ username, password });
 
       const result = response?.data?.result;
-
-      // ✅ Validate response structure
-      if (!result || typeof result !== "object") {
-        throw new Error("Malformed server response");
+      if (!result?.token) {
+        throw new Error("Invalid server response");
       }
 
       const { token, refreshToken } = result;
 
-      if (!token) {
-        throw new Error("Missing access token");
-      }
-
-      // ✅ Store tokens safely
+      // ✅ Store tokens
       localStorage.setItem("accessToken", token);
       if (refreshToken) {
         localStorage.setItem("refreshToken", refreshToken);
@@ -68,54 +50,29 @@ const Login = () => {
       setAccessToken(token);
       toast.success("Đăng nhập thành công!");
 
-      // ✅ Decode token safely
+      // ✅ Decode safely
       let userScope = "";
-
       try {
         const decoded = jwtDecode(token);
-
-        // Optional deeper validation
-        if (decoded?.exp && decoded.exp * 1000 < Date.now()) {
-          throw new Error("Token expired");
-        }
-
         userScope = decoded?.scope?.trim() || "";
       } catch (decodeError) {
-        console.warn("Token decode failed:", decodeError.message);
+        console.warn("Invalid token format");
       }
 
-      // ✅ Role-based navigation
-      const redirectPath =
-        userScope === ROLE_ADMIN_STRING ? "/admin" : "/";
-
-      navigate(redirectPath, { replace: true });
+      // ✅ Navigate (no reload needed)
+      if (userScope === ROLE_ADMIN_STRING) {
+        navigate("/admin", { replace: true });
+      } else {
+        navigate("/", { replace: true });
+      }
 
     } catch (err) {
-      let message = "Đăng nhập thất bại. Vui lòng thử lại.";
+      const apiError =
+        err?.response?.data?.message ||
+        err.message ||
+        "Đăng nhập thất bại. Vui lòng kiểm tra lại.";
 
-      // ✅ Handle known API errors
-      if (err?.response) {
-        const status = err.response.status;
-
-        switch (status) {
-          case 400:
-          case 401:
-            message = "Sai tài khoản hoặc mật khẩu.";
-            break;
-          case 403:
-            message = "Bạn không có quyền truy cập.";
-            break;
-          case 500:
-            message = "Lỗi server. Vui lòng thử lại sau.";
-            break;
-          default:
-            message = err.response.data?.message || message;
-        }
-      } else if (err.message) {
-        message = err.message;
-      }
-
-      setError(message);
+      setError(apiError);
       console.error("Login Error:", err);
 
     } finally {
